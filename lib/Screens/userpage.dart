@@ -6,9 +6,6 @@ import 'package:vrep/Screens/widgets/userpost.dart';
 import 'package:vrep/Screens/widgets/usertrait.dart';
 
 class UserPage extends StatefulWidget {
-  final User user;
-  UserPage(this.user);
-
   @override
   _UserPageState createState() => _UserPageState();
 }
@@ -47,7 +44,7 @@ class _UserPageState extends State<UserPage> {
                               Icons.keyboard_arrow_left,
                               color: Colors.white,
                             ),
-                            Text('@' + widget.user.username,
+                            Text('@' + UserData.user.username,
                                 style: TextStyle(
                                     fontSize: 16, color: Colors.white)),
                             Icon(
@@ -58,7 +55,7 @@ class _UserPageState extends State<UserPage> {
                         ),
                         Spacer(),
                         Text(
-                          widget.user.userbio,
+                          UserData.user.userbio,
                           style: TextStyle(color: Colors.white),
                           textAlign: TextAlign.center,
                         ),
@@ -112,7 +109,7 @@ class _UserPageState extends State<UserPage> {
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Text(
-                              formatStats(widget.user.follower_count),
+                              formatStats(UserData.user.follower_count),
                               style: TextStyle(color: Colors.black),
                             ),
                           ),
@@ -120,7 +117,7 @@ class _UserPageState extends State<UserPage> {
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Text(
-                              formatStats(widget.user.post_count),
+                              formatStats(UserData.user.post_count),
                               style: TextStyle(color: Colors.black),
                             ),
                           )

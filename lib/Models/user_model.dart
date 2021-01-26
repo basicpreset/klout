@@ -1,8 +1,6 @@
 import 'package:uuid/uuid.dart';
-import 'package:vrep/Models/comment_model.dart';
-import 'package:vrep/Models/post_model.dart';
 
-class User {
+class MyUser {
   final Uuid id;
   final String username;
   final String name;
@@ -14,7 +12,7 @@ class User {
   final int follower_count;
   final double karma;
 
-  User({
+  MyUser({
     this.id,
     this.username,
     this.name,

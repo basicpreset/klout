@@ -3,7 +3,7 @@ import 'package:vrep/Models/post_model.dart';
 import 'package:vrep/Models/user_model.dart';
 
 class UserData {
-  static User user = User(
+  static MyUser user = MyUser(
       id: Uuid(),
       username: 'itsdanielworks',
       name: 'Reha Daniel',
@@ -15,13 +15,12 @@ class UserData {
       follower_count: 31412,
       karma: 3.2);
   static Post post = Post(
-    post_id: Uuid(),
-    user_id: Uuid(),
-    content: 'Dolor sit amet comet lorem ipsum dor simut.',
-    image_url: 'URL',
-    created_on: DateTime.now(),
-    upvote_count: 313,
-    downvote_count: 14,
-    comment_count: 42
-  );
+      post_id: Uuid(),
+      user_id: Uuid(),
+      content: 'Dolor sit amet comet lorem ipsum dor simut.',
+      image_url: 'URL',
+      created_on: DateTime.now(),
+      upvote_count: 313,
+      downvote_count: 14,
+      comment_count: 42);
 }

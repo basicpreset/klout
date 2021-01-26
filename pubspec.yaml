@@ -31,6 +31,8 @@ dependencies:
   uuid: ^2.2.2
   flutter_spinkit: "^4.1.2"
   provider: ^4.3.3
+  country_code_picker: ^1.7.0
+  pin_code_fields: ^6.1.0
 
 dev_dependencies:
   flutter_test:
@@ -54,6 +56,7 @@ flutter:
     - ./cover.jpg
     - ./profile.jpg
     - ./tesla.jpg
+    - ./blankprofile.png
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

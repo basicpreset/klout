@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:vrep/Core/userdata.dart';
+import 'package:vrep/Screens/initialdetailspage.dart';
+import 'package:vrep/Screens/otppage.dart';
 import 'package:vrep/Screens/userpage.dart';
 import 'Models/user_model.dart';
 import 'Screens/feedpage.dart';
+import 'Screens/loginpage.dart';
+import 'Screens/registerpage.dart';
 import 'Screens/searchpage.dart';
 
 void main() {
@@ -14,15 +18,20 @@ class MasterWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(fontFamily: 'Proxima'),
-      home: NavigationCanvas(user: UserData.user),
       debugShowCheckedModeBanner: false,
+      initialRoute: '/',
+      routes: {
+        '/': (context) => LoginPage(),
+        '/register': (context) => RegisterPage(),
+        '/otpverificationpage': (context) => OtpPage(),
+        '/initialdetails': (context) => InitialDetailsPage(),
+        '/navigationcanvas' : (context) => NavigationCanvas()
+      },
     );
   }
 }
 
 class NavigationCanvas extends StatefulWidget {
-  User user;
-  NavigationCanvas({this.user});
   @override
   _NavigationCanvasState createState() => _NavigationCanvasState();
 }
@@ -30,14 +39,13 @@ class NavigationCanvas extends StatefulWidget {
 class _NavigationCanvasState extends State<NavigationCanvas> {
   int _selectedIndex = 0;
 
-  List pages = [FeedPage(), SearchPage()];
+  List pages = [FeedPage(), SearchPage(), UserPage()];
 
   List headers = [];
 
   @override
   void initState() {
     super.initState();
-    pages.add(UserPage(widget.user));
   }
 
   @override
