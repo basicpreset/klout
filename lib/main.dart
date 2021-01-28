@@ -8,6 +8,7 @@ import 'Screens/feedpage.dart';
 import 'Screens/loginpage.dart';
 import 'Screens/registerpage.dart';
 import 'Screens/searchpage.dart';
+import 'Screens/thisuserpage.dart';
 
 void main() {
   runApp(MasterWidget());

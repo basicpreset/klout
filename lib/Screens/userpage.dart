@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:vrep/Core/theme.dart';
 import 'package:vrep/Core/userdata.dart';
 import 'package:vrep/Models/user_model.dart';
+import 'package:vrep/Screens/widgets/addpostwindow.dart';
 import 'package:vrep/Screens/widgets/userpost.dart';
 import 'package:vrep/Screens/widgets/usertrait.dart';
 
@@ -51,6 +53,7 @@ class _UserPageState extends State<UserPage> {
                             Icon(
                               Icons.send,
                               color: Colors.white,
+                              size: 24,
                             )
                           ],
                         ),
@@ -70,36 +73,39 @@ class _UserPageState extends State<UserPage> {
                             borderRadius: BorderRadius.circular(50)),
                         Spacer(),
                         Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(
-                              Icons.people,
-                              color: Colors.white,
+                            Row(
+                              children: [
+                                Icon(
+                                  Icons.people,
+                                  color: Colors.white,
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 12),
+                                  child: Text(
+                                    formatStats(UserData.user.follower_count),
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                ),
+                              ],
                             ),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 12),
-                              child: Text(
-                                formatStats(UserData.user.follower_count),
-                                style: TextStyle(color: Colors.white),
-                              ),
-                            ),
-                            Icon(
-                              Icons.edit,
-                              color: Colors.white,
-                            ),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 12),
-                              child: Text(
-                                formatStats(UserData.user.post_count),
-                                style: TextStyle(color: Colors.white),
-                              ),
-                            ),
-                            Spacer(),
-                            Icon(
-                              Icons.person_add_alt_1,
-                              color: Colors.white,
+                            Row(
+                              children: [
+                                Icon(
+                                  Icons.edit,
+                                  color: Colors.white,
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 12),
+                                  child: Text(
+                                    formatStats(UserData.user.post_count),
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                ),
+                              ],
                             ),
                           ],
                         ),
@@ -112,32 +118,55 @@ class _UserPageState extends State<UserPage> {
 
             //UNDER HEADER -> Profile pic, details, feed, etc
             Padding(
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.symmetric(
+                  horizontal: MyTheme.padding_horizontal),
               child: Container(
                 //transform: Matrix4.translationValues(0.0, -70, 0.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     //Followers and stats
-                    Text(UserData.user.full_name,
-                        style: TextStyle(fontSize: 16, color: Colors.black)),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    UserTrait('Software developer'),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Text(UserData.user.userbio),
-                    Container(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [],
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 20),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Text(UserData.user.full_name,
+                                  style: TextStyle(
+                                      fontSize: 16, color: Colors.black)),
+                              Spacer(),
+                              //Text('Edit profile'),
+                              Icon(
+                                Icons.person_add,
+                                color: Colors.black,
+                                size: 24,
+                              ),
+                            ],
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          UserTrait('Software developer'),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Text(UserData.user.userbio),
+                        ],
                       ),
                     ),
+
                     Divider(),
+                    //UPLOAD POST
+
                     // USER POSTS
-                    UserPost()
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        UserPost(),
+                      ],
+                    ),
                   ],
                 ),
               ),
