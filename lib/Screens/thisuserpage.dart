@@ -16,9 +16,9 @@ class ThisUserPage extends StatefulWidget {
 class _ThisUserPageState extends State<ThisUserPage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SingleChildScrollView(
-        child: Column(
+    return Consumer<ThisUserData>(builder: (context, data, child) {
+      return Scaffold(
+        body: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             //TOP HEADER
@@ -48,7 +48,7 @@ class _ThisUserPageState extends State<ThisUserPage> {
                               Icons.keyboard_arrow_left,
                               color: Colors.transparent,
                             ),
-                            Text('@' + UserData.user.username,
+                            Text('@' + data.user.username,
                                 style: TextStyle(
                                     fontSize: 16, color: Colors.white)),
                             Icon(
@@ -86,7 +86,7 @@ class _ThisUserPageState extends State<ThisUserPage> {
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 12),
                                   child: Text(
-                                    formatStats(UserData.user.follower_count),
+                                    formatStats(data.user.follower_count),
                                     style: TextStyle(color: Colors.white),
                                   ),
                                 ),
@@ -102,7 +102,7 @@ class _ThisUserPageState extends State<ThisUserPage> {
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 12),
                                   child: Text(
-                                    formatStats(UserData.user.post_count),
+                                    formatStats(data.user.post_count),
                                     style: TextStyle(color: Colors.white),
                                   ),
                                 ),
@@ -134,7 +134,7 @@ class _ThisUserPageState extends State<ThisUserPage> {
                         children: [
                           Row(
                             children: [
-                              Text(UserData.user.full_name,
+                              Text(data.user.full_name,
                                   style: TextStyle(
                                       fontSize: 16, color: Colors.black)),
                               Spacer(),
@@ -153,7 +153,7 @@ class _ThisUserPageState extends State<ThisUserPage> {
                           SizedBox(
                             height: 10,
                           ),
-                          Text(UserData.user.userbio),
+                          Text(data.user.userbio),
                         ],
                       ),
                     ),
@@ -168,7 +168,7 @@ class _ThisUserPageState extends State<ThisUserPage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          UserPost(),
+                          PostWidget(),
                         ],
                       ),
                     ),
@@ -178,8 +178,8 @@ class _ThisUserPageState extends State<ThisUserPage> {
             ),
           ],
         ),
-      ),
-    );
+      );
+    });
   }
 
   String formatStats(int statCount) {

@@ -1,64 +1,75 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:provider/provider.dart';
 import 'package:vrep/Core/userdata.dart';
+import 'package:vrep/Models/post_model.dart';
 
-class UserPost extends StatelessWidget {
+class PostWidget extends StatelessWidget {
+  MyPost post;
+  PostWidget({this.post});
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 12),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Row(
-              children: [
-                CircleAvatar(
-                  backgroundImage: AssetImage('profile.jpg'),
-                  radius: 12,
-                ),
-                //Icon(Icons.repeat),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text('@' + UserData.user.username.toString() + ' megosztotta'),
-                ),
-                Spacer(),
-                Text(getPostDate(UserData.post.created_on))
-              ],
-            ),
-            SizedBox(
-              height: 18,
-            ),
-            Text(UserData.post.content, textAlign: TextAlign.start,),
-            SizedBox(
-              height: 18,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  children: [
-                    Icon(Icons.keyboard_arrow_up),
-                    Text(UserData.post.upvote_count.toString()),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Icon(Icons.keyboard_arrow_down),
-                    Text(UserData.post.downvote_count.toString()),
-                  ],
-                ),
-                Row(
-                  children: [
-                    Icon(Icons.comment_outlined, size: 18),
-                    Text('Hozzászólások (${UserData.post.comment_count.toString()})'),
-                  ],
-                ),
-              ],
-            ),
-          ],
+    return Consumer<PostsData>(builder: (context, data, child) {
+      return Container(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 12),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Row(
+                children: [
+                  CircleAvatar(
+                    backgroundImage: AssetImage('profile.jpg'),
+                    radius: 12,
+                  ),
+                  //Icon(Icons.repeat),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child:
+                        Text('@' + post.username.toString() + ' megosztotta'),
+                  ),
+                  Spacer(),
+                  Text(getPostDate(post.created_on))
+                ],
+              ),
+              SizedBox(
+                height: 18,
+              ),
+              Text(
+                post.content,
+                textAlign: TextAlign.start,
+              ),
+              SizedBox(
+                height: 18,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      Icon(Icons.keyboard_arrow_up),
+                      Text(post.upvote_count.toString()),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Icon(Icons.keyboard_arrow_down),
+                      Text(post.downvote_count.toString()),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Icon(Icons.comment_outlined, size: 18),
+                      Text('Hozzászólások (${post.comment_count.toString()})'),
+                    ],
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
-      ),
-    );
+      );
+    });
   }
 
   String getPostDate(DateTime created_on) {

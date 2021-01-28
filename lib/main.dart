@@ -1,8 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:vrep/Core/userdata.dart';
 import 'package:vrep/Screens/initialdetailspage.dart';
 import 'package:vrep/Screens/otppage.dart';
 import 'package:vrep/Screens/userpage.dart';
+import 'package:vrep/Services/apiservices.dart';
 import 'Models/user_model.dart';
 import 'Screens/feedpage.dart';
 import 'Screens/loginpage.dart';
@@ -11,6 +14,9 @@ import 'Screens/searchpage.dart';
 import 'Screens/thisuserpage.dart';
 
 void main() {
+  ApiServices apiServices = ApiServices();
+  apiServices.httpConfig();
+  apiServices.getUser(1);
   runApp(MasterWidget());
 }
 
@@ -26,7 +32,7 @@ class MasterWidget extends StatelessWidget {
         '/register': (context) => RegisterPage(),
         '/otpverificationpage': (context) => OtpPage(),
         '/initialdetails': (context) => InitialDetailsPage(),
-        '/navigationcanvas' : (context) => NavigationCanvas()
+        '/navigationcanvas': (context) => NavigationCanvas()
       },
     );
   }
