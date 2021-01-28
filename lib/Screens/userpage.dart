@@ -18,11 +18,12 @@ class _UserPageState extends State<UserPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            //TOP HEADER
             Container(
               height: MediaQuery.of(context).size.height * 0.3,
               decoration: BoxDecoration(
                   image: DecorationImage(
-                      image: AssetImage('tesla.jpg'), fit: BoxFit.cover)),
+                      image: AssetImage('bgcity.jpg'), fit: BoxFit.cover)),
               child: Stack(children: [
                 Container(
                   decoration:
@@ -54,15 +55,48 @@ class _UserPageState extends State<UserPage> {
                           ],
                         ),
                         Spacer(),
-                        Text(
+                        /* Text(
                           UserData.user.userbio,
                           style: TextStyle(color: Colors.white),
                           textAlign: TextAlign.center,
-                        ),
+                        ), */
+                        ClipRRect(
+                            child: Image(
+                              image: AssetImage('profile.jpg'),
+                              height: 100,
+                              width: 100,
+                              fit: BoxFit.cover,
+                            ),
+                            borderRadius: BorderRadius.circular(50)),
                         Spacer(),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
+                            Icon(
+                              Icons.people,
+                              color: Colors.white,
+                            ),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 12),
+                              child: Text(
+                                formatStats(UserData.user.follower_count),
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ),
+                            Icon(
+                              Icons.edit,
+                              color: Colors.white,
+                            ),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 12),
+                              child: Text(
+                                formatStats(UserData.user.post_count),
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ),
+                            Spacer(),
                             Icon(
                               Icons.person_add_alt_1,
                               color: Colors.white,
@@ -75,53 +109,30 @@ class _UserPageState extends State<UserPage> {
                 ),
               ]),
             ),
+
+            //UNDER HEADER -> Profile pic, details, feed, etc
             Padding(
               padding: const EdgeInsets.all(20),
               child: Container(
-                transform: Matrix4.translationValues(0.0, -70, 0.0),
+                //transform: Matrix4.translationValues(0.0, -70, 0.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Profile picture row
-                    ClipRRect(
-                        child: Image(
-                          image: AssetImage('profile.jpg'),
-                          height: 100,
-                          width: 100,
-                          fit: BoxFit.cover,
-                        ),
-                        borderRadius: BorderRadius.circular(24)),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    // USER TRAITS
-
-                    UserTrait('Software developer'),
                     //Followers and stats
+                    Text(UserData.user.full_name,
+                        style: TextStyle(fontSize: 16, color: Colors.black)),
                     SizedBox(
                       height: 10,
                     ),
+                    UserTrait('Software developer'),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Text(UserData.user.userbio),
                     Container(
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Icon(Icons.people),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(
-                              formatStats(UserData.user.follower_count),
-                              style: TextStyle(color: Colors.black),
-                            ),
-                          ),
-                          Icon(Icons.edit),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(
-                              formatStats(UserData.user.post_count),
-                              style: TextStyle(color: Colors.black),
-                            ),
-                          )
-                        ],
+                        children: [],
                       ),
                     ),
                     Divider(),
@@ -153,5 +164,6 @@ class _UserPageState extends State<UserPage> {
       String statString = statDouble.toStringAsFixed(1) + 'B';
       return statString;
     }
+    return null;
   }
 }

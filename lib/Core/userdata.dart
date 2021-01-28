@@ -6,14 +6,14 @@ class UserData {
   static MyUser user = MyUser(
       id: Uuid(),
       username: 'itsdanielworks',
-      name: 'Reha Daniel',
+      full_name: 'Reha Daniel',
       userbio: 'Lorem ipsum dolor sit amet, lorem ipsum dolor sit.',
       phone_number: '+36706136413',
       email: 'rehadaniel.personal@gmail.com',
       reg_date: DateTime.now(),
       post_count: 312,
       follower_count: 31412,
-      karma: 3.2);
+      following_count: 42);
   static Post post = Post(
       post_id: Uuid(),
       user_id: Uuid(),

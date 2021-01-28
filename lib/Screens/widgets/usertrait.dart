@@ -9,7 +9,14 @@ class UserTrait extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(),
       child: Row(
-        children: [Icon(Icons.computer), SizedBox(width: 10),Text(traitName)],
+        children: [
+          Icon(
+            Icons.computer,
+            size: 18,
+          ),
+          SizedBox(width: 10),
+          Text(traitName)
+        ],
       ),
     );
   }

@@ -21,7 +21,7 @@ class MasterWidget extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       initialRoute: '/',
       routes: {
-        '/': (context) => LoginPage(),
+        '/': (context) => UserPage(),
         '/register': (context) => RegisterPage(),
         '/otpverificationpage': (context) => OtpPage(),
         '/initialdetails': (context) => InitialDetailsPage(),
