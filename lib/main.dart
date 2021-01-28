@@ -22,7 +22,7 @@ class MasterWidget extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       initialRoute: '/',
       routes: {
-        '/': (context) => UserPage(),
+        '/': (context) => NavigationCanvas(),
         '/register': (context) => RegisterPage(),
         '/otpverificationpage': (context) => OtpPage(),
         '/initialdetails': (context) => InitialDetailsPage(),
@@ -40,7 +40,7 @@ class NavigationCanvas extends StatefulWidget {
 class _NavigationCanvasState extends State<NavigationCanvas> {
   int _selectedIndex = 0;
 
-  List pages = [FeedPage(), SearchPage(), UserPage()];
+  List pages = [FeedPage(), SearchPage(), ThisUserPage()];
 
   List headers = [];
 

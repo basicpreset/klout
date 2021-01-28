@@ -1,7 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:vrep/Core/userdata.dart';
 
-class AddPostWindow extends StatelessWidget {
+class AddPostWindow extends StatefulWidget {
+  @override
+  _AddPostWindowState createState() => _AddPostWindowState();
+}
+
+class _AddPostWindowState extends State<AddPostWindow> {
+  TextEditingController _postController;
+
+  int maxPostLength = 150;
+  int currentPostLength = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _postController = TextEditingController();
+  }
+
+  void updatePostLength() {
+    setState(() {
+      currentPostLength = _postController.text.length;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -17,7 +39,7 @@ class AddPostWindow extends StatelessWidget {
                   backgroundImage: AssetImage('profile.jpg'),
                   radius: 12,
                 ),
-                Text('Creating post'),
+                Text('Create post'),
                 //Spacer(),
                 InkWell(
                   child: Icon(Icons.close),
@@ -28,16 +50,25 @@ class AddPostWindow extends StatelessWidget {
               ],
             ),
             TextField(
-              decoration: InputDecoration(border: InputBorder.none),
+              decoration: InputDecoration(
+                border: InputBorder.none,
+                counterText: '',
+                hintText: 'Start typing here...',
+              ),
               keyboardType: TextInputType.multiline,
               maxLines: null,
               autofocus: true,
               textAlignVertical: TextAlignVertical.top,
+              maxLength: 150,
+              controller: _postController,
+              onChanged: (String text) {
+                updatePostLength();
+              },
             ),
             Spacer(),
             Row(
               children: [
-                Text('0/150'),
+                Text('$currentPostLength/150'),
                 Spacer(),
                 InkWell(
                   child: Text('Post'),
