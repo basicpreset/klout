@@ -16,7 +16,8 @@ import 'Screens/thisuserpage.dart';
 void main() {
   ApiServices apiServices = ApiServices();
   apiServices.httpConfig();
-  apiServices.getUser(1);
+  //apiServices.getUser(1);
+  //apiServices.loadFeed([1]);
   runApp(MasterWidget());
 }
 

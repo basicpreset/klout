@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:vrep/Models/post_model.dart';
 import 'package:vrep/Models/user_model.dart';
 import 'package:http/http.dart' as http;
 
@@ -19,6 +20,21 @@ class ApiServices {
       } else {
         print(
             'API Request error, status code: ${value.statusCode}, error: ${value}');
+      }
+    });
+  }
+
+  Future<List<MyPost>> loadFeed(List<int> following) async {
+    await http.post(baseUrl + 'post/following',
+        body: jsonEncode(following),
+        headers: {'Content-Type': 'application/json'}).then((value) {
+      if (value.statusCode == 200) {
+        List<MyPost> posts = (jsonDecode(value.body) as List)
+            .map((e) => MyPost.fromJson(json: e)).toList();
+        print('Successful data fetch: $posts');
+        return posts;
+      } else {
+        print('Error loading feed data: ${value.statusCode}');
       }
     });
   }

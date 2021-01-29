@@ -10,7 +10,7 @@ class PostWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<ThisUserData>(builder: (context, data, child) {
+    return Consumer<LocalCache>(builder: (context, data, child) {
       return Container(
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 12),

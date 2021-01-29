@@ -3,10 +3,12 @@ import 'package:provider/provider.dart';
 import 'package:vrep/Core/userdata.dart';
 import 'package:vrep/Screens/widgets/createpost.dart';
 import 'package:vrep/Screens/widgets/userpost.dart';
+import 'package:vrep/Services/apiservices.dart';
 
 class FeedPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    ApiServices apiServices = ApiServices();
     return Container(
       child: SafeArea(
         bottom: false,
@@ -26,17 +28,21 @@ class FeedPage extends StatelessWidget {
                 child: CreatePost(),
               ),
               //Toggle between feed and search
-              ChangeNotifierProvider(
-                create: (context) => ThisUserData(),
-                child: Column(
-                  children: [
-                    PostWidget(
-                      post: null,
-                    ),
-                    PostWidget(),
-                    PostWidget()
-                  ],
-                ),
+              FutureBuilder(
+                future: apiServices.loadFeed([1]),
+                builder: (BuildContext context, AsyncSnapshot snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {}
+                  return ListView.builder(
+                    scrollDirection: Axis.vertical,
+                    shrinkWrap: true,
+                    itemCount: snapshot.data,
+                    itemBuilder: (context, int index) {
+                      return PostWidget(
+                        post: snapshot.data[index],
+                      );
+                    },
+                  );
+                },
               )
             ],
           ),

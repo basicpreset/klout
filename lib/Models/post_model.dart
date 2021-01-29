@@ -33,7 +33,7 @@ class MyPost {
     this.user_img_url = json['user_img_url'];
     this.content = json['content'];
     this.image_url = json['image_url'];
-    this.created_on = json['created_on'];
+    this.created_on = DateTime.parse(json['created_on']);
     this.upvote_count = json['upvote_count'];
     this.downvote_count = json['downvote_count'];
     this.comment_count = json['comment_count'];

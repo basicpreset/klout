@@ -16,7 +16,7 @@ class ThisUserPage extends StatefulWidget {
 class _ThisUserPageState extends State<ThisUserPage> {
   @override
   Widget build(BuildContext context) {
-    return Consumer<ThisUserData>(builder: (context, data, child) {
+    return Consumer<LocalCache>(builder: (context, data, child) {
       return Scaffold(
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
