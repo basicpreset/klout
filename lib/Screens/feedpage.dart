@@ -37,9 +37,9 @@ class FeedPage extends StatelessWidget {
                     shrinkWrap: true,
                     itemCount: snapshot.data,
                     itemBuilder: (context, int index) {
-                      return PostWidget(
+/*                       return PostWidget(
                         post: snapshot.data[index],
-                      );
+                      ); */
                     },
                   );
                 },
