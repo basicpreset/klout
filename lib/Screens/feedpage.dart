@@ -27,9 +27,15 @@ class FeedPage extends StatelessWidget {
               ),
               //Toggle between feed and search
               ChangeNotifierProvider(
-                create: (context) => PostsData(),
-                              child: Column(
-                  children: [PostWidget(post: ,), PostWidget(), PostWidget()],
+                create: (context) => ThisUserData(),
+                child: Column(
+                  children: [
+                    PostWidget(
+                      post: null,
+                    ),
+                    PostWidget(),
+                    PostWidget()
+                  ],
                 ),
               )
             ],

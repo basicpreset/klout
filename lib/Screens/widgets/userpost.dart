@@ -10,7 +10,7 @@ class PostWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<PostsData>(builder: (context, data, child) {
+    return Consumer<ThisUserData>(builder: (context, data, child) {
       return Container(
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 12),
@@ -26,18 +26,18 @@ class PostWidget extends StatelessWidget {
                   //Icon(Icons.repeat),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child:
-                        Text('@' + post.username.toString() + ' megosztotta'),
+                    child: Text(
+                        '@' + data.post.username.toString() + ' megosztotta'),
                   ),
                   Spacer(),
-                  Text(getPostDate(post.created_on))
+                  Text(getPostDate(data.post.created_on))
                 ],
               ),
               SizedBox(
                 height: 18,
               ),
               Text(
-                post.content,
+                data.post.content,
                 textAlign: TextAlign.start,
               ),
               SizedBox(
@@ -49,18 +49,19 @@ class PostWidget extends StatelessWidget {
                   Row(
                     children: [
                       Icon(Icons.keyboard_arrow_up),
-                      Text(post.upvote_count.toString()),
+                      Text(data.post.upvote_count.toString()),
                       SizedBox(
                         width: 10,
                       ),
                       Icon(Icons.keyboard_arrow_down),
-                      Text(post.downvote_count.toString()),
+                      Text(data.post.downvote_count.toString()),
                     ],
                   ),
                   Row(
                     children: [
                       Icon(Icons.comment_outlined, size: 18),
-                      Text('Hozzászólások (${post.comment_count.toString()})'),
+                      Text(
+                          'Hozzászólások (${data.post.comment_count.toString()})'),
                     ],
                   ),
                 ],
