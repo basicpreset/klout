@@ -25,18 +25,21 @@ class ApiServices {
   }
 
   Future<List<MyPost>> loadFeed(List<int> following) async {
+    List<MyPost> posts;
     await http.post(baseUrl + 'post/following',
         body: jsonEncode(following),
         headers: {'Content-Type': 'application/json'}).then((value) {
       if (value.statusCode == 200) {
-        List<MyPost> posts = (jsonDecode(value.body) as List)
-            .map((e) => MyPost.fromJson(json: e)).toList();
+        posts = (jsonDecode(value.body) as List)
+            .map((e) => MyPost.fromJson(json: e))
+            .toList();
         print('Successful data fetch: $posts');
         return posts;
       } else {
         print('Error loading feed data: ${value.statusCode}');
       }
     });
+    return posts;
   }
 }
 

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
 import 'package:vrep/Core/userdata.dart';
+import 'package:vrep/Models/post_model.dart';
 import 'package:vrep/Screens/widgets/createpost.dart';
 import 'package:vrep/Screens/widgets/userpost.dart';
 import 'package:vrep/Services/apiservices.dart';
@@ -29,17 +31,27 @@ class FeedPage extends StatelessWidget {
               ),
               //Toggle between feed and search
               FutureBuilder(
-                future: apiServices.loadFeed([1]),
-                builder: (BuildContext context, AsyncSnapshot snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {}
+                future: apiServices.loadFeed([2, 1]),
+                builder: (BuildContext context,
+                    AsyncSnapshot<List<MyPost>> snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return SpinKitCircle(
+                      color: Colors.blue,
+                    );
+                  }
+                  if (!snapshot.hasData) {
+                    return Text(
+                        "Uh oh, looks like you don't follow anyone yet!");
+                  }
                   return ListView.builder(
                     scrollDirection: Axis.vertical,
                     shrinkWrap: true,
-                    itemCount: snapshot.data,
-                    itemBuilder: (context, int index) {
-/*                       return PostWidget(
+                    itemCount: snapshot.data.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      print(snapshot.data);
+                      return PostWidget(
                         post: snapshot.data[index],
-                      ); */
+                      );
                     },
                   );
                 },

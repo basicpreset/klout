@@ -5,12 +5,12 @@ class MyPost {
   int user_id;
   String username;
   String user_img_url;
-  String content;
+  String post_content;
   String image_url;
   DateTime created_on;
-  int upvote_count;
-  int downvote_count;
-  int comment_count;
+  int likes_count;
+  int dislikes_count;
+  int comments_count;
   int original_post_id;
 
   MyPost(
@@ -18,12 +18,12 @@ class MyPost {
       this.user_id,
       this.username,
       this.user_img_url,
-      this.content,
+      this.post_content,
       this.image_url,
       this.created_on,
-      this.upvote_count,
-      this.downvote_count,
-      this.comment_count,
+      this.likes_count,
+      this.dislikes_count,
+      this.comments_count,
       this.original_post_id});
 
   MyPost.fromJson({var json}) {
@@ -31,12 +31,12 @@ class MyPost {
     this.user_id = json['user_id'];
     this.username = json['username'];
     this.user_img_url = json['user_img_url'];
-    this.content = json['content'];
+    this.post_content = json['post_content'];
     this.image_url = json['image_url'];
     this.created_on = DateTime.parse(json['created_on']);
-    this.upvote_count = json['upvote_count'];
-    this.downvote_count = json['downvote_count'];
-    this.comment_count = json['comment_count'];
+    this.likes_count = json['likes_count'];
+    this.dislikes_count = json['dislikes_count'];
+    this.comments_count = json['comments_count'];
     this.original_post_id = json['original_post_id'];
   }
 
@@ -46,12 +46,12 @@ class MyPost {
       'user_id': this.user_id,
       'username': this.username,
       'user_img_url': this.user_img_url,
-      'content': this.content,
+      'post_content': this.post_content,
       'image_url': this.image_url,
       'created_on': this.created_on,
-      'upvote_count': this.upvote_count,
-      'downvote_count': this.downvote_count,
-      'comment_count': this.comment_count,
+      'likes_count': this.likes_count,
+      'dislikes_count': this.dislikes_count,
+      'comments_count': this.comments_count,
       'original_post_id': this.original_post_id,
     };
   }

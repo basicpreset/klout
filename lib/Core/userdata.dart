@@ -19,27 +19,4 @@ class LocalCache extends ChangeNotifier {
       }
     });
   }
-
-  MyPost post = MyPost(
-/*           {this.post_id,
-      this.user_id,
-      this.username,
-      this.user_img_url,
-      this.content,
-      this.image_url,
-      this.created_on,
-      this.upvote_count,
-      this.downvote_count,
-      this.comment_count,
-      this.original_post_id}); */
-      post_id: 1,
-      user_id: 1,
-      username: 'itsdanielworks',
-      user_img_url: '',
-      content: 'Lorem ipsum dolor sit amet.',
-      created_on: DateTime(2021, 01, 27),
-      upvote_count: 242,
-      downvote_count: 23,
-      comment_count: 42,
-      original_post_id: null);
 }
