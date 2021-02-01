@@ -11,55 +11,57 @@ class FeedPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ApiServices apiServices = ApiServices();
-    return Container(
-      child: SafeArea(
-        bottom: false,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              //Trending header
-              Text(
-                'Feed',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.w700),
-                textAlign: TextAlign.start,
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 10),
-                child: CreatePost(),
-              ),
-              //Toggle between feed and search
-              FutureBuilder(
-                future: apiServices.loadFeed([2, 1]),
-                builder: (BuildContext context,
-                    AsyncSnapshot<List<MyPost>> snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return SpinKitCircle(
-                      color: Colors.blue,
-                    );
-                  }
-                  if (!snapshot.hasData) {
-                    return Text(
-                        "Uh oh, looks like you don't follow anyone yet!");
-                  }
-                  return ListView.builder(
-                    scrollDirection: Axis.vertical,
-                    shrinkWrap: true,
-                    itemCount: snapshot.data.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      print(snapshot.data);
-                      return PostWidget(
-                        post: snapshot.data[index],
+    return Consumer<LocalCache>(builder: (context, cache, child) {
+      return Container(
+        child: SafeArea(
+          bottom: false,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                //Trending header
+                Text(
+                  'Feed',
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.w700),
+                  textAlign: TextAlign.start,
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 10),
+                  child: CreatePost(),
+                ),
+                //Toggle between feed and search
+                FutureBuilder(
+                  future: apiServices.loadFeed(cache.user_id),
+                  builder: (BuildContext context,
+                      AsyncSnapshot<List<MyPost>> snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return SpinKitCircle(
+                        color: Colors.blue,
                       );
-                    },
-                  );
-                },
-              )
-            ],
+                    }
+                    if (!snapshot.hasData) {
+                      return Text(
+                          "Uh oh, looks like you don't follow anyone yet!");
+                    }
+                    return ListView.builder(
+                      scrollDirection: Axis.vertical,
+                      shrinkWrap: true,
+                      itemCount: snapshot.data.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        print(snapshot.data);
+                        return PostWidget(
+                          post: snapshot.data[index],
+                        );
+                      },
+                    );
+                  },
+                )
+              ],
+            ),
           ),
         ),
-      ),
-    );
+      );
+    });
   }
 }

@@ -9,12 +9,14 @@ class ApiServices {
     HttpOverrides.global = new MyHttpOverrides();
   }
 
-  String baseUrl = 'https://localhost:5001/';
-  Future<MyUser> getUser(int id) async {
-    await http.get(baseUrl + 'user/$id').then((value) {
+  String baseUrl = 'https://localhost:5002/';
+
+  Future<MyUser> getUser(String user_id) async {
+    MyUser user;
+    await http.get(baseUrl + 'user/$user_id').then((value) {
       if (value.statusCode == 200) {
         var jsonResponse = jsonDecode(value.body);
-        MyUser user = MyUser.fromJson(jsonResponse);
+        user = MyUser.fromJson(jsonResponse);
         print('Successful User fetch: ${user.username}');
         return user;
       } else {
@@ -22,13 +24,12 @@ class ApiServices {
             'API Request error, status code: ${value.statusCode}, error: ${value}');
       }
     });
+    return user;
   }
 
-  Future<List<MyPost>> loadFeed(List<int> following) async {
+  Future<List<MyPost>> loadFeed(String user_id) async {
     List<MyPost> posts;
-    await http.post(baseUrl + 'post/following',
-        body: jsonEncode(following),
-        headers: {'Content-Type': 'application/json'}).then((value) {
+    await http.get(baseUrl + 'post/feed/$user_id').then((value) {
       if (value.statusCode == 200) {
         posts = (jsonDecode(value.body) as List)
             .map((e) => MyPost.fromJson(json: e))
@@ -40,6 +41,30 @@ class ApiServices {
       }
     });
     return posts;
+  }
+
+  Future<bool> likePost({int post_id}) async {
+    await http.put(baseUrl + 'like/$post_id').then((value) {
+      if (value.statusCode == 200) {
+        return true;
+      } else {
+        print('Error liking post, status code: ${value.statusCode}');
+        return false;
+      }
+    });
+    return true;
+  }
+
+  Future<bool> dislikePost({int post_id}) async {
+    await http.put(baseUrl + 'dislike/$post_id').then((value) {
+      if (value.statusCode == 200) {
+        return true;
+      } else {
+        print('Error disliking post, status code: ${value.statusCode}');
+        return false;
+      }
+    });
+    return true;
   }
 }
 

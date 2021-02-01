@@ -2,11 +2,11 @@ import 'package:uuid/uuid.dart';
 
 class MyPost {
   int post_id;
-  int user_id;
+  String user_id;
   String username;
   String user_img_url;
   String post_content;
-  String image_url;
+  String post_img_url;
   DateTime created_on;
   int likes_count;
   int dislikes_count;
@@ -19,7 +19,7 @@ class MyPost {
       this.username,
       this.user_img_url,
       this.post_content,
-      this.image_url,
+      this.post_img_url,
       this.created_on,
       this.likes_count,
       this.dislikes_count,
@@ -32,7 +32,7 @@ class MyPost {
     this.username = json['username'];
     this.user_img_url = json['user_img_url'];
     this.post_content = json['post_content'];
-    this.image_url = json['image_url'];
+    this.post_img_url = json['post_img_url'];
     this.created_on = DateTime.parse(json['created_on']);
     this.likes_count = json['likes_count'];
     this.dislikes_count = json['dislikes_count'];
@@ -47,7 +47,7 @@ class MyPost {
       'username': this.username,
       'user_img_url': this.user_img_url,
       'post_content': this.post_content,
-      'image_url': this.image_url,
+      'post_img_url': this.post_img_url,
       'created_on': this.created_on,
       'likes_count': this.likes_count,
       'dislikes_count': this.dislikes_count,

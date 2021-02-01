@@ -18,167 +18,170 @@ class ThisUserPage extends StatefulWidget {
 class _ThisUserPageState extends State<ThisUserPage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          //TOP HEADER
-          Container(
-            height: MediaQuery.of(context).size.height * 0.3,
-            decoration: BoxDecoration(
-                image: DecorationImage(
-                    image: AssetImage('bgcity.jpg'), fit: BoxFit.cover)),
-            child: Stack(children: [
-              Container(
-                decoration: BoxDecoration(color: Color.fromRGBO(0, 0, 0, 0.5)),
-              ),
-              SafeArea(
-                bottom: false,
-                child: Padding(
-                  padding:
-                      const EdgeInsets.only(left: 20, right: 20, bottom: 20),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Icon(
-                            Icons.keyboard_arrow_left,
-                            color: Colors.transparent,
-                          ),
-                          Text('@' + widget.user.username,
-                              style:
-                                  TextStyle(fontSize: 16, color: Colors.white)),
-                          Icon(
-                            Icons.image,
-                            color: Colors.white,
-                            size: 24,
-                          )
-                        ],
-                      ),
-                      Spacer(),
-                      /* Text(
-                          UserData.user.userbio,
-                          style: TextStyle(color: Colors.white),
-                          textAlign: TextAlign.center,
-                        ), */
-                      ClipRRect(
-                          child: Image(
-                            image: AssetImage('profile.jpg'),
-                            height: 100,
-                            width: 100,
-                            fit: BoxFit.cover,
-                          ),
-                          borderRadius: BorderRadius.circular(50)),
-                      Spacer(),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Row(
-                            children: [
-                              Icon(
-                                Icons.people,
-                                color: Colors.white,
-                              ),
-                              Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 12),
-                                child: Text(
-                                  formatStats(widget.user.follower_count),
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                              ),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              Icon(
-                                Icons.edit,
-                                color: Colors.white,
-                              ),
-                              Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 12),
-                                child: Text(
-                                  formatStats(widget.user.post_count),
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
+    return Consumer<Widget>(builder: (context, cache, child) {
+      return Scaffold(
+        body: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            //TOP HEADER
+            Container(
+              height: MediaQuery.of(context).size.height * 0.3,
+              decoration: BoxDecoration(
+                  image: DecorationImage(
+                      image: AssetImage('bgcity.jpg'), fit: BoxFit.cover)),
+              child: Stack(children: [
+                Container(
+                  decoration:
+                      BoxDecoration(color: Color.fromRGBO(0, 0, 0, 0.5)),
                 ),
-              ),
-            ]),
-          ),
-
-          //UNDER HEADER -> Profile pic, details, feed, etc
-          Padding(
-            padding: const EdgeInsets.symmetric(
-                horizontal: MyTheme.padding_horizontal),
-            child: Container(
-              //transform: Matrix4.translationValues(0.0, -70, 0.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  //Followers and stats
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 20),
+                SafeArea(
+                  bottom: false,
+                  child: Padding(
+                    padding:
+                        const EdgeInsets.only(left: 20, right: 20, bottom: 20),
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(widget.user.full_name,
-                                style: TextStyle(
-                                    fontSize: 16, color: Colors.black)),
-                            Spacer(),
-                            //Text('Edit profile'),
                             Icon(
-                              Icons.edit_outlined,
-                              color: Colors.black,
+                              Icons.keyboard_arrow_left,
+                              color: Colors.transparent,
+                            ),
+                            Text('@' + widget.user.username,
+                                style: TextStyle(
+                                    fontSize: 16, color: Colors.white)),
+                            Icon(
+                              Icons.image,
+                              color: Colors.white,
                               size: 24,
+                            )
+                          ],
+                        ),
+                        Spacer(),
+                        /* Text(
+                            UserData.user.userbio,
+                            style: TextStyle(color: Colors.white),
+                            textAlign: TextAlign.center,
+                          ), */
+                        ClipRRect(
+                            child: Image(
+                              image: AssetImage('profile.jpg'),
+                              height: 100,
+                              width: 100,
+                              fit: BoxFit.cover,
+                            ),
+                            borderRadius: BorderRadius.circular(50)),
+                        Spacer(),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Row(
+                              children: [
+                                Icon(
+                                  Icons.people,
+                                  color: Colors.white,
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 12),
+                                  child: Text(
+                                    formatStats(widget.user.follower_count),
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Icon(
+                                  Icons.edit,
+                                  color: Colors.white,
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 12),
+                                  child: Text(
+                                    formatStats(widget.user.post_count),
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                ),
+                              ],
                             ),
                           ],
                         ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        UserTrait('Software developer'),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Text(widget.user.userbio),
                       ],
                     ),
                   ),
+                ),
+              ]),
+            ),
 
-                  //Divider(),
-                  //UPLOAD POST
-                  CreatePost(),
-
-                  // USER POSTS
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        PostWidget(),
-                      ],
+            //UNDER HEADER -> Profile pic, details, feed, etc
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                  horizontal: MyTheme.padding_horizontal),
+              child: Container(
+                //transform: Matrix4.translationValues(0.0, -70, 0.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    //Followers and stats
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 20),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Text(widget.user.full_name,
+                                  style: TextStyle(
+                                      fontSize: 16, color: Colors.black)),
+                              Spacer(),
+                              //Text('Edit profile'),
+                              Icon(
+                                Icons.edit_outlined,
+                                color: Colors.black,
+                                size: 24,
+                              ),
+                            ],
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          UserTrait('Software developer'),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Text(widget.user.userbio),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+
+                    //Divider(),
+                    //UPLOAD POST
+                    CreatePost(),
+
+                    // USER POSTS
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          PostWidget(),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
-      ),
-    );
+          ],
+        ),
+      );
+    });
   }
 
   String formatStats(int statCount) {

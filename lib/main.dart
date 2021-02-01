@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:vrep/Core/userdata.dart';
 import 'package:vrep/Screens/initialdetailspage.dart';
 import 'package:vrep/Screens/otppage.dart';
@@ -24,17 +25,20 @@ void main() {
 class MasterWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData(fontFamily: 'Proxima'),
-      debugShowCheckedModeBanner: false,
-      initialRoute: '/',
-      routes: {
-        '/': (context) => LoginPage(),
-        '/register': (context) => RegisterPage(),
-        '/otpverificationpage': (context) => OtpPage(),
-        '/initialdetails': (context) => InitialDetailsPage(),
-        '/navigationcanvas': (context) => NavigationCanvas()
-      },
+    return ChangeNotifierProvider(
+      create: (context) => LocalCache(),
+      child: MaterialApp(
+        theme: ThemeData(fontFamily: 'Proxima'),
+        debugShowCheckedModeBanner: false,
+        initialRoute: '/',
+        routes: {
+          '/': (context) => NavigationCanvas(),
+          '/register': (context) => RegisterPage(),
+          '/otpverificationpage': (context) => OtpPage(),
+          '/initialdetails': (context) => InitialDetailsPage(),
+          '/navigationcanvas': (context) => NavigationCanvas()
+        },
+      ),
     );
   }
 }
@@ -59,9 +63,12 @@ class _NavigationCanvasState extends State<NavigationCanvas> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        //padding: EdgeInsets.only(left: 20, right: 20),
-        child: pages[_selectedIndex],
+      body: ChangeNotifierProvider(
+        create: (context) => LocalCache(),
+        child: Container(
+          //padding: EdgeInsets.only(left: 20, right: 20),
+          child: pages[_selectedIndex],
+        ),
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: [

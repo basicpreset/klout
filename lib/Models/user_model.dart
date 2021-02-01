@@ -1,7 +1,7 @@
 import 'package:uuid/uuid.dart';
 
 class MyUser {
-  int user_id;
+  String user_id;
   String username;
   String full_name;
   String userbio;
@@ -11,19 +11,22 @@ class MyUser {
   int post_count;
   int follower_count;
   int following_count;
+  String profile_img_url;
+  String profile_cover_url;
 
-  MyUser({
-    this.user_id,
-    this.username,
-    this.full_name,
-    this.userbio,
-    this.phone_number,
-    this.email,
-    this.reg_date,
-    this.post_count,
-    this.follower_count,
-    this.following_count,
-  });
+  MyUser(
+      {this.user_id,
+      this.username,
+      this.full_name,
+      this.userbio,
+      this.phone_number,
+      this.email,
+      this.reg_date,
+      this.post_count,
+      this.follower_count,
+      this.following_count,
+      this.profile_img_url,
+      this.profile_cover_url});
 
   MyUser.fromJson(Map<String, dynamic> json) {
     this.user_id = json['user_id'];
@@ -36,6 +39,8 @@ class MyUser {
     this.post_count = json['post_count'];
     this.follower_count = json['follower_count'];
     this.following_count = json['following_count'];
+    this.profile_img_url = json['profile_img_url'];
+    this.profile_cover_url = json['profile_cover_url'];
   }
 
   Map<String, dynamic> toJson() {
@@ -49,7 +54,9 @@ class MyUser {
       'reg_date': this.reg_date,
       'post_count': this.post_count,
       'follower_count': this.follower_count,
-      'following': this.following_count
+      'following': this.following_count,
+      'profile_img_url': this.profile_img_url,
+      'profile_cover_url': this.profile_cover_url
     };
   }
 }
