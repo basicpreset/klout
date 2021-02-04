@@ -34,6 +34,8 @@ dependencies:
   country_code_picker: ^1.7.0
   pin_code_fields: ^6.1.0
   http: ^0.12.2
+  firebase_auth: ^0.20.0+1
+  firebase_core: ^0.7.0
 
 dev_dependencies:
   flutter_test:

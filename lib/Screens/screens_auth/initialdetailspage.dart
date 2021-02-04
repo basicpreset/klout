@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:vrep/Core/theme.dart';
+import 'package:vrep/Core/userdata.dart';
+import 'package:vrep/Models/user_model.dart';
+import 'package:vrep/Services/apiservices.dart';
 
 class InitialDetailsPage extends StatefulWidget {
   @override
@@ -15,6 +19,8 @@ class _InitialDetailsPageState extends State<InitialDetailsPage> {
   double _imageSize = 80;
   int _usernameLength;
   bool _isPwObscure = true;
+
+  ApiServices api;
 
   void updateUsername() {
     setState(() {
@@ -37,6 +43,8 @@ class _InitialDetailsPageState extends State<InitialDetailsPage> {
     _passwordController = TextEditingController();
 
     updateUsername();
+
+    api = ApiServices();
   }
 
   @override
@@ -192,31 +200,53 @@ class _InitialDetailsPageState extends State<InitialDetailsPage> {
                     ],
                   ),
                 ),
-                Expanded(
-                  child: Center(
-                    child: InkWell(
-                      child: Text(
-                        'Continue',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Colors.blue,
-                          fontSize: 18,
+                Consumer<LocalCache>(builder: (context, data, child) {
+                  return Expanded(
+                    child: Center(
+                      child: InkWell(
+                        child: Text(
+                          'Continue',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Colors.blue,
+                            fontSize: 18,
+                          ),
                         ),
+                        onTap: () {
+                          MyUser newUser = MyUser(
+                              user_id: data.user_id,
+                              username: _usernameController.text,
+                              full_name: _nameController.text,
+                              phone_number: '',
+                              email: _emailController.text,
+                              reg_date: '2021-02-04T00:42:00',
+                              post_count: 0,
+                              follower_count: 0,
+                              following_count: 0,
+                              profile_img_url: '',
+                              profile_cover_url: '');
+                          createUser(context, newUser);
+                        },
                       ),
-                      onTap: () {
-                        Navigator.pushNamedAndRemoveUntil(
-                            context,
-                            '/navigationcanvas',
-                            (Route<dynamic> route) => false);
-                      },
                     ),
-                  ),
-                )
+                  );
+                })
               ],
             ),
           ),
         ),
       ),
     );
+  }
+
+  Future<void> createUser(BuildContext context, MyUser user) async {
+    await api.createUser(user).then((value) {
+      if (value.user_id == user.user_id) {
+        Provider.of<LocalCache>(context, listen: false).setUser(user: value);
+        print('Successfully created user: ${value.user_id}');
+        Navigator.pushNamedAndRemoveUntil(
+            context, '/navigationcanvas', (route) => false);
+      } else {}
+    });
   }
 }

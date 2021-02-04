@@ -1,7 +1,31 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:vrep/Core/theme.dart';
+import 'package:vrep/Core/userdata.dart';
+import 'package:vrep/Services/authservices.dart';
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
+  @override
+  _LoginPageState createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  TextEditingController _emailController;
+  TextEditingController _passController;
+
+  AuthService authService;
+
+  String errorMessage = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _emailController = TextEditingController();
+    _passController = TextEditingController();
+
+    authService = AuthService();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,10 +58,11 @@ class LoginPage extends StatelessWidget {
                         color: Colors.black12,
                         borderRadius: BorderRadius.circular(8)),
                     child: TextField(
-                        decoration: InputDecoration(
-                            border: InputBorder.none,
-                            contentPadding:
-                                EdgeInsets.symmetric(horizontal: 12)))),
+                      decoration: InputDecoration(
+                          border: InputBorder.none,
+                          contentPadding: EdgeInsets.symmetric(horizontal: 12)),
+                      controller: _emailController,
+                    )),
                 SizedBox(
                   height: 10,
                 ),
@@ -47,10 +72,11 @@ class LoginPage extends StatelessWidget {
                       color: Colors.black12,
                       borderRadius: BorderRadius.circular(8)),
                   child: TextField(
-                      decoration: InputDecoration(
-                          border: InputBorder.none,
-                          contentPadding:
-                              EdgeInsets.symmetric(horizontal: 12))),
+                    decoration: InputDecoration(
+                        border: InputBorder.none,
+                        contentPadding: EdgeInsets.symmetric(horizontal: 12)),
+                    controller: _passController,
+                  ),
                 ),
                 SizedBox(
                   height: 10,
@@ -59,23 +85,22 @@ class LoginPage extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Spacer(),
-/*                     Text(
-                      "Phone number login",
-                      style: TextStyle(
-                        color: Colors.blue,
-                        fontSize: 18,
+                    InkWell(
+                      child: Text(
+                        'Login',
+                        textAlign: TextAlign.end,
+                        style: TextStyle(
+                          color: Colors.blue,
+                          fontSize: 18,
+                        ),
                       ),
-                    ), */
-                    Text(
-                      'Login',
-                      textAlign: TextAlign.end,
-                      style: TextStyle(
-                        color: Colors.blue,
-                        fontSize: 18,
-                      ),
+                      onTap: () {
+                        login(context);
+                      },
                     ),
                   ],
                 ),
+                Text(errorMessage),
                 Expanded(
                   flex: 1,
                   child: Column(
@@ -90,7 +115,7 @@ class LoginPage extends StatelessWidget {
                           ),
                         ),
                         onTap: () {
-                          Navigator.pushNamed(context, '/register');
+                          Navigator.pushNamed(context, '/signup_emailpass');
                         },
                       ),
                     ],
@@ -102,5 +127,25 @@ class LoginPage extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void login(BuildContext context) async {
+    await authService
+        .login(
+      email: _emailController.text,
+      password: _passController.text,
+    )
+        .then((value) {
+      if (value[0] == 'success') {
+        Provider.of<LocalCache>(context, listen: false)
+            .setUID(user_id: value[1]);
+        Navigator.pushNamedAndRemoveUntil(
+            context, '/navigationcanvas', (route) => false);
+      } else {
+        setState(() {
+          errorMessage = value[1];
+        });
+      }
+    });
   }
 }

@@ -7,7 +7,7 @@ class MyUser {
   String userbio;
   String phone_number;
   String email;
-  DateTime reg_date;
+  String reg_date;
   int post_count;
   int follower_count;
   int following_count;
@@ -35,7 +35,7 @@ class MyUser {
     this.userbio = json['userbio'];
     this.phone_number = json['phone_number'];
     this.email = json['email'];
-    this.reg_date = DateTime.parse(json['reg_date']);
+    this.reg_date = json['reg_date'];
     this.post_count = json['post_count'];
     this.follower_count = json['follower_count'];
     this.following_count = json['following_count'];

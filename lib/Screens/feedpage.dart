@@ -7,7 +7,12 @@ import 'package:vrep/Screens/widgets/createpost.dart';
 import 'package:vrep/Screens/widgets/userpost.dart';
 import 'package:vrep/Services/apiservices.dart';
 
-class FeedPage extends StatelessWidget {
+class FeedPage extends StatefulWidget {
+  @override
+  _FeedPageState createState() => _FeedPageState();
+}
+
+class _FeedPageState extends State<FeedPage> {
   @override
   Widget build(BuildContext context) {
     ApiServices apiServices = ApiServices();
@@ -32,7 +37,7 @@ class FeedPage extends StatelessWidget {
                 ),
                 //Toggle between feed and search
                 FutureBuilder(
-                  future: apiServices.loadFeed(cache.user_id),
+                  future: apiServices.loadFeed(user_id: cache.user_id),
                   builder: (BuildContext context,
                       AsyncSnapshot<List<MyPost>> snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {

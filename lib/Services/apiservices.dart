@@ -11,7 +11,7 @@ class ApiServices {
 
   String baseUrl = 'https://localhost:5002/';
 
-  Future<MyUser> getUser(String user_id) async {
+  Future<MyUser> getUser({String user_id}) async {
     MyUser user;
     await http.get(baseUrl + 'user/$user_id').then((value) {
       if (value.statusCode == 200) {
@@ -27,9 +27,23 @@ class ApiServices {
     return user;
   }
 
-  Future<List<MyPost>> loadFeed(String user_id) async {
+  Future<MyUser> createUser(MyUser user) async {
+    var jsonBody = jsonEncode(user.toJson());
+    MyUser newUser;
+    await http.post(baseUrl + 'user/create', body: jsonBody, headers: {
+      'Content-type': 'application/json',
+      'Accept': 'application/json'
+    }).then((value) => {
+          newUser = MyUser.fromJson(
+            jsonDecode(value.body),
+          ),
+        });
+    return newUser;
+  }
+
+  Future<List<MyPost>> loadFeed({String user_id}) async {
     List<MyPost> posts;
-    await http.get(baseUrl + 'post/feed/$user_id').then((value) {
+    await http.get(baseUrl + 'post/$user_id/feed').then((value) {
       if (value.statusCode == 200) {
         posts = (jsonDecode(value.body) as List)
             .map((e) => MyPost.fromJson(json: e))
