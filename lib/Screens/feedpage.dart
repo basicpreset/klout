@@ -6,6 +6,7 @@ import 'package:vrep/Models/post_model.dart';
 import 'package:vrep/Screens/widgets/createpost.dart';
 import 'package:vrep/Screens/widgets/userpost.dart';
 import 'package:vrep/Services/apiservices.dart';
+import 'package:vrep/Services/authservices.dart';
 
 class FeedPage extends StatefulWidget {
   @override
@@ -13,9 +14,17 @@ class FeedPage extends StatefulWidget {
 }
 
 class _FeedPageState extends State<FeedPage> {
+  ApiServices api;
+  AuthService auth;
+  @override
+  void initState() {
+    super.initState();
+    api = ApiServices();
+    auth = AuthService();
+  }
+
   @override
   Widget build(BuildContext context) {
-    ApiServices apiServices = ApiServices();
     return Consumer<LocalCache>(builder: (context, cache, child) {
       return Container(
         child: SafeArea(
@@ -26,10 +35,22 @@ class _FeedPageState extends State<FeedPage> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 //Trending header
-                Text(
-                  'Feed',
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.w700),
-                  textAlign: TextAlign.start,
+                Row(
+                  children: [
+                    Text(
+                      'Feed',
+                      style:
+                          TextStyle(fontSize: 24, fontWeight: FontWeight.w700),
+                      textAlign: TextAlign.start,
+                    ),
+                    Spacer(),
+                    InkWell(
+                      child: Text('Log out'),
+                      onTap: () {
+                        logout(context);
+                      },
+                    )
+                  ],
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 10),
@@ -37,7 +58,7 @@ class _FeedPageState extends State<FeedPage> {
                 ),
                 //Toggle between feed and search
                 FutureBuilder(
-                  future: apiServices.loadFeed(user_id: cache.user_id),
+                  future: api.loadFeed(user_id: cache.user_id),
                   builder: (BuildContext context,
                       AsyncSnapshot<List<MyPost>> snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
@@ -45,7 +66,7 @@ class _FeedPageState extends State<FeedPage> {
                         color: Colors.blue,
                       );
                     }
-                    if (!snapshot.hasData) {
+                    if (snapshot.data.isEmpty) {
                       return Text(
                           "Uh oh, looks like you don't follow anyone yet!");
                     }
@@ -67,6 +88,12 @@ class _FeedPageState extends State<FeedPage> {
           ),
         ),
       );
+    });
+  }
+
+  Future<void> logout(BuildContext context) async {
+    await auth.logout().then((value) {
+      Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
     });
   }
 }

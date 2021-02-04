@@ -39,4 +39,10 @@ class LocalCache extends ChangeNotifier {
     this.user_id = user_id;
     notifyListeners();
   }
+
+  void removeUser() {
+    this.user_id = '';
+    this.user = null;
+    notifyListeners();
+  }
 }

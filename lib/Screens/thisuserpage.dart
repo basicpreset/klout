@@ -9,8 +9,6 @@ import 'package:vrep/Screens/widgets/userpost.dart';
 import 'package:vrep/Screens/widgets/usertrait.dart';
 
 class ThisUserPage extends StatefulWidget {
-  MyUser user;
-  ThisUserPage({this.user});
   @override
   _ThisUserPageState createState() => _ThisUserPageState();
 }
@@ -18,7 +16,7 @@ class ThisUserPage extends StatefulWidget {
 class _ThisUserPageState extends State<ThisUserPage> {
   @override
   Widget build(BuildContext context) {
-    return Consumer<Widget>(builder: (context, cache, child) {
+    return Consumer<LocalCache>(builder: (context, cache, child) {
       return Scaffold(
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -50,7 +48,7 @@ class _ThisUserPageState extends State<ThisUserPage> {
                               Icons.keyboard_arrow_left,
                               color: Colors.transparent,
                             ),
-                            Text('@' + widget.user.username,
+                            Text('@' + cache.user.username,
                                 style: TextStyle(
                                     fontSize: 16, color: Colors.white)),
                             Icon(
@@ -88,7 +86,7 @@ class _ThisUserPageState extends State<ThisUserPage> {
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 12),
                                   child: Text(
-                                    formatStats(widget.user.follower_count),
+                                    formatStats(cache.user.follower_count),
                                     style: TextStyle(color: Colors.white),
                                   ),
                                 ),
@@ -104,7 +102,7 @@ class _ThisUserPageState extends State<ThisUserPage> {
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 12),
                                   child: Text(
-                                    formatStats(widget.user.post_count),
+                                    formatStats(cache.user.post_count),
                                     style: TextStyle(color: Colors.white),
                                   ),
                                 ),
@@ -136,7 +134,7 @@ class _ThisUserPageState extends State<ThisUserPage> {
                         children: [
                           Row(
                             children: [
-                              Text(widget.user.full_name,
+                              Text(cache.user.full_name,
                                   style: TextStyle(
                                       fontSize: 16, color: Colors.black)),
                               Spacer(),
@@ -155,7 +153,6 @@ class _ThisUserPageState extends State<ThisUserPage> {
                           SizedBox(
                             height: 10,
                           ),
-                          Text(widget.user.userbio),
                         ],
                       ),
                     ),
@@ -170,7 +167,7 @@ class _ThisUserPageState extends State<ThisUserPage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          PostWidget(),
+                          //PostWidget(),
                         ],
                       ),
                     ),

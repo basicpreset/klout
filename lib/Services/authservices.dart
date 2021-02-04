@@ -7,13 +7,6 @@ class AuthService {
   User user;
   AuthService() {
     auth = FirebaseAuth.instance;
-/*     auth.authStateChanges().listen((User user) {
-      if (user != null) {
-        this.user = user;
-      } else {
-        this.user = null;
-      }
-    }); */
   }
 
   User checkState() {
@@ -76,6 +69,8 @@ class AuthService {
   }
 
   Future<void> logout() async {
-    await auth.signOut();
+    await auth.signOut().then((value) {
+      this.user = null;
+    });
   }
 }
