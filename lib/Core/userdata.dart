@@ -6,28 +6,25 @@ import 'package:vrep/Screens/widgets/userpost.dart';
 import 'package:vrep/Services/apiservices.dart';
 
 class LocalCache extends ChangeNotifier {
+  bool reloadFeed = true;
+  bool reloadProfile = true;
   String user_id;
-  MyUser user = MyUser(
-      user_id: 'ghtialdor',
-      username: 'itsdanielworks',
-      full_name: 'Reha Daniel',
-      userbio: 'I made a social media app so I could get myself verified',
-      email: 'rehadaniel@gmail.com',
-      reg_date: DateTime.now().toString(),
-      post_count: 124,
-      follower_count: 421242,
-      following_count: 32,
-      profile_img_url: '',
-      profile_cover_url: '');
+  MyUser user;
 
   List<MyPost> feedPosts;
-  List<MyPost> localUserPosts;
+  List<MyPost> thisUserPosts;
 
   List<int> likedPosts = [1];
   List<int> dislikedPosts = [2];
 
   void setFeed({List<MyPost> posts}) {
     this.feedPosts = posts;
+    notifyListeners();
+  }
+
+  void setUserPosts({List<MyPost> posts}) {
+    this.thisUserPosts = posts;
+    notifyListeners();
   }
 
   void setUser({MyUser user}) {

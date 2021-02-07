@@ -6,12 +6,12 @@ import 'package:vrep/Screens/loadingpage.dart';
 import 'package:vrep/Screens/screens_auth/initialdetailspage.dart';
 import 'package:vrep/Screens/screens_auth/otppage.dart';
 import 'package:vrep/Services/apiservices.dart';
-import 'Screens/feedpage.dart';
 import 'Screens/screens_auth/loginpage.dart';
 import 'Screens/screens_auth/signup_emailpass.dart';
 import 'Screens/screens_auth/signup_phone.dart';
-import 'Screens/searchpage.dart';
-import 'Screens/thisuserpage.dart';
+import 'Screens/screens_main/feedpage.dart';
+import 'Screens/screens_main/searchpage.dart';
+import 'Screens/screens_main/thisuserpage.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

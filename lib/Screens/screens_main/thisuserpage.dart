@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
 import 'package:vrep/Core/theme.dart';
 import 'package:vrep/Core/userdata.dart';
+import 'package:vrep/Models/post_model.dart';
 import 'package:vrep/Models/user_model.dart';
 import 'package:vrep/Screens/widgets/addpostwindow.dart';
 import 'package:vrep/Screens/widgets/createpost.dart';
 import 'package:vrep/Screens/widgets/userpost.dart';
 import 'package:vrep/Screens/widgets/usertrait.dart';
+import 'package:vrep/Services/apiservices.dart';
 
 class ThisUserPage extends StatefulWidget {
   @override
@@ -14,6 +17,13 @@ class ThisUserPage extends StatefulWidget {
 }
 
 class _ThisUserPageState extends State<ThisUserPage> {
+  ApiServices api;
+  @override
+  void initState() {
+    super.initState();
+    api = ApiServices();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<LocalCache>(builder: (context, cache, child) {
@@ -163,14 +173,36 @@ class _ThisUserPageState extends State<ThisUserPage> {
 
                     // USER POSTS
                     Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          //PostWidget(),
-                        ],
-                      ),
-                    ),
+                        padding: const EdgeInsets.symmetric(vertical: 8),
+                        child: cache.reloadProfile
+                            ? FutureBuilder<List<MyPost>>(
+                                future: api.thisUserPosts(context,
+                                    user_id: cache.user_id),
+                                builder: (BuildContext context,
+                                    AsyncSnapshot<List<MyPost>> snapshot) {
+                                  if (snapshot.connectionState ==
+                                      ConnectionState.waiting) {
+                                    return SpinKitCircle(
+                                      size: 20,
+                                      color: Colors.blue,
+                                    );
+                                  }
+
+                                  if (snapshot.connectionState ==
+                                      ConnectionState.none) {
+                                    return Text(
+                                        "Uh oh, couldn't establish connection. Try reloading the app.");
+                                  }
+
+                                  if (snapshot.data.isEmpty) {
+                                    return Text(
+                                        "You don't have any posts yet!");
+                                  }
+
+                                  return posts(posts: snapshot.data);
+                                },
+                              )
+                            : posts(posts: cache.thisUserPosts)),
                   ],
                 ),
               ),
@@ -179,6 +211,22 @@ class _ThisUserPageState extends State<ThisUserPage> {
         ),
       );
     });
+  }
+
+  Widget posts({List<MyPost> posts}) {
+    if (posts != null) {
+      return ListView.builder(
+          shrinkWrap: true,
+          scrollDirection: Axis.vertical,
+          itemCount: posts.length,
+          itemBuilder: (BuildContext ctxt, int index) {
+            return PostWidget(
+              post: posts[index],
+            );
+          });
+    } else {
+      return Text("You don't have any posts yet!");
+    }
   }
 
   String formatStats(int statCount) {

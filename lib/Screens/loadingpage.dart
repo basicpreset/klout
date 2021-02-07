@@ -39,6 +39,7 @@ class _LoadingPageState extends State<LoadingPage> {
   Future<void> getAuthState(context) async {
     User user = FirebaseAuth.instance.currentUser;
     if (user == null) {
+      await Future.delayed(Duration(seconds: 1));
       Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
     } else {
       Provider.of<LocalCache>(context, listen: false).user_id = user.uid;

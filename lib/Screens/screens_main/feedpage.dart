@@ -57,32 +57,25 @@ class _FeedPageState extends State<FeedPage> {
                   child: CreatePost(),
                 ),
                 //Toggle between feed and search
-                FutureBuilder(
-                  future: api.loadFeed(user_id: cache.user_id),
-                  builder: (BuildContext context,
-                      AsyncSnapshot<List<MyPost>> snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return SpinKitCircle(
-                        color: Colors.blue,
-                      );
-                    }
-                    if (snapshot.data.isEmpty) {
-                      return Text(
-                          "Uh oh, looks like you don't follow anyone yet!");
-                    }
-                    return ListView.builder(
-                      scrollDirection: Axis.vertical,
-                      shrinkWrap: true,
-                      itemCount: snapshot.data.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        print(snapshot.data);
-                        return PostWidget(
-                          post: snapshot.data[index],
-                        );
-                      },
-                    );
-                  },
-                )
+                cache.reloadFeed
+                    ? FutureBuilder(
+                        future: api.loadFeed(context, user_id: cache.user_id),
+                        builder: (BuildContext context,
+                            AsyncSnapshot<List<MyPost>> snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return SpinKitCircle(
+                              color: Colors.blue,
+                            );
+                          }
+                          if (snapshot.data.isEmpty) {
+                            return Text(
+                                "Uh oh, looks like you don't follow anyone yet!");
+                          }
+                          return buildFeed(posts: snapshot.data);
+                        },
+                      )
+                    : buildFeed(posts: cache.feedPosts)
               ],
             ),
           ),
@@ -91,9 +84,32 @@ class _FeedPageState extends State<FeedPage> {
     });
   }
 
+  Widget buildFeed({List<MyPost> posts}) {
+    if (posts != null && posts.length > 0) {
+      return ListView.builder(
+        scrollDirection: Axis.vertical,
+        shrinkWrap: true,
+        itemCount: posts.length,
+        itemBuilder: (BuildContext context, int index) {
+          return PostWidget(
+            post: posts[index],
+          );
+        },
+      );
+    } else {
+      return Text("Uh oh, looks like you don't follow anyone yet!");
+    }
+  }
+
   Future<void> logout(BuildContext context) async {
     await auth.logout().then((value) {
       Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
+    });
+  }
+
+  void reload() {
+    setState(() {
+      Provider.of<LocalCache>(context).reloadFeed = true;
     });
   }
 }

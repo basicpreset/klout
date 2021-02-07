@@ -1,5 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:provider/provider.dart';
+import 'package:vrep/Core/userdata.dart';
 import 'package:vrep/Models/post_model.dart';
 import 'package:vrep/Models/user_model.dart';
 import 'package:http/http.dart' as http;
@@ -11,6 +13,9 @@ class ApiServices {
 
   String baseUrl = 'https://localhost:5002/';
 
+  // USER ENDPOINTS -----------------
+
+  // 1. Get user
   Future<MyUser> getUser({String user_id}) async {
     MyUser user;
     await http.get(baseUrl + 'user/$user_id').then((value) {
@@ -27,6 +32,7 @@ class ApiServices {
     return user;
   }
 
+  // 2. Create user
   Future<MyUser> createUser(MyUser user) async {
     var jsonBody = jsonEncode(user.toJson());
     MyUser newUser;
@@ -41,25 +47,115 @@ class ApiServices {
     return newUser;
   }
 
-  Future<List<MyPost>> loadFeed({String user_id}) async {
-    List<MyPost> posts;
-    await http.get(baseUrl + 'post/$user_id/feed').then((value) {
+  // 3. Edit user
+
+  // 4. Delete user
+
+  // 5. Follow user
+
+  // 6. Unfollow user
+
+  // 7. Followers
+
+  // 8. Following
+
+  // FEED ENDPOINTS -----------------
+
+  // 1. Get post
+  Future<MyPost> getPost({int post_id}) async {
+    MyPost post;
+    await http.get(baseUrl + 'post/$post_id').then((value) {
       if (value.statusCode == 200) {
-        posts = (jsonDecode(value.body) as List)
-            .map((e) => MyPost.fromJson(json: e))
-            .toList();
-        print('Successful data fetch: $posts');
-        return posts;
+        post = MyPost.fromJson(json: jsonDecode(value.body));
+        return post;
       } else {
-        print('Error loading feed data: ${value.statusCode}');
+        print(
+            'Error getting post(id: $post_id), status code: ${value.statusCode}');
+        return null;
       }
     });
-    return posts;
+    return post;
   }
 
-  Future<bool> likePost({int post_id}) async {
-    await http.put(baseUrl + 'like/$post_id').then((value) {
+  // 2. Create post
+  Future<MyPost> createPost({String user_id, MyPost post}) async {
+    var jsonBody = jsonEncode(post.toJson());
+    MyPost newPost;
+    await http.post(baseUrl + 'post/$user_id/create', body: jsonBody, headers: {
+      'Content-type': 'application/json',
+      'Accept': 'application/json'
+    }).then((value) {
       if (value.statusCode == 200) {
+        newPost = MyPost.fromJson(json: jsonDecode(value.body));
+        return newPost;
+      } else {
+        print('Error creating post, status code: ${value.statusCode}');
+        return null;
+      }
+    });
+    return newPost;
+  }
+
+  // 3. Edit post
+  Future<MyPost> editPost({int post_id, MyPost post}) async {
+    var jsonBody = jsonEncode(post.toJson());
+    MyPost newPost;
+    await http.post(baseUrl + 'post/edit/$post_id', body: jsonBody, headers: {
+      'Content-type': 'application/json',
+      'Accept': 'application/json'
+    }).then((value) {
+      if (value.statusCode == 200) {
+        newPost = MyPost.fromJson(json: jsonDecode(value.body));
+        return newPost;
+      } else {
+        print('Error editing post, status code: ${value.statusCode}');
+        return null;
+      }
+    });
+    return newPost;
+  }
+
+  // 4. Repost
+  Future<MyPost> repostPost(
+      {String user_id, MyPost post, int original_post_id}) async {
+    var jsonBody = jsonEncode(post.toJson());
+    MyPost newPost;
+    await http.post(baseUrl + 'post/$user_id/repost/$original_post_id',
+        body: jsonBody,
+        headers: {
+          'Content-type': 'application/json',
+          'Accept': 'application/json'
+        }).then((value) {
+      if (value.statusCode == 200) {
+        newPost = MyPost.fromJson(json: jsonDecode(value.body));
+        return newPost;
+      } else {
+        print(
+            'Error reposting post(id: $original_post_id), status code: ${value.statusCode}');
+        return null;
+      }
+    });
+    return newPost;
+  }
+
+  // 5. Delete post
+  Future<bool> deletePost({String user_id, int post_id}) async {
+    await http.get(baseUrl + 'post/$user_id/delete/$post_id').then((value) {
+      if (value.statusCode == 200) {
+        print('Successfully deleted post(id: $post_id');
+        return true;
+      } else {
+        print('Error deleting post(id: $post_id)');
+        return false;
+      }
+    });
+  }
+
+  // 6. Like post
+  Future<bool> likePost({String user_id, int post_id}) async {
+    await http.get(baseUrl + 'post/$user_id/like/$post_id').then((value) {
+      if (value.statusCode == 200) {
+        print('Successfully liked post(id: $post_id');
         return true;
       } else {
         print('Error liking post, status code: ${value.statusCode}');
@@ -69,9 +165,11 @@ class ApiServices {
     return true;
   }
 
-  Future<bool> dislikePost({int post_id}) async {
-    await http.put(baseUrl + 'dislike/$post_id').then((value) {
+  // 7. Dislike post
+  Future<bool> dislikePost({String user_id, int post_id}) async {
+    await http.get(baseUrl + 'post/$user_id/dislike/$post_id').then((value) {
       if (value.statusCode == 200) {
+        print('Successfully disliked post(id: $post_id');
         return true;
       } else {
         print('Error disliking post, status code: ${value.statusCode}');
@@ -79,6 +177,45 @@ class ApiServices {
       }
     });
     return true;
+  }
+
+  // 8. Load feed of {user_id}
+  Future<List<MyPost>> loadFeed(context, {String user_id}) async {
+    List<MyPost> posts;
+    await http.get(baseUrl + 'post/$user_id/feed').then((value) {
+      if (value.statusCode == 200) {
+        posts = (jsonDecode(value.body) as List)
+            .map((e) => MyPost.fromJson(json: e))
+            .toList();
+        Provider.of<LocalCache>(context, listen: false).reloadFeed = false;
+        Provider.of<LocalCache>(context, listen: false).setFeed(posts: posts);
+        print('Successfully loaded feed of user(id: $user_id)');
+        return posts;
+      } else {
+        print('Error loading feed of user(id: $user_id): ${value.statusCode}');
+      }
+    });
+    return posts;
+  }
+
+  // 9. All posts of {user_id}
+  Future<List<MyPost>> thisUserPosts(context, {String user_id}) async {
+    List<MyPost> posts;
+    await http.get(baseUrl + 'post/$user_id/all').then((value) {
+      if (value.statusCode == 200) {
+        posts = (jsonDecode(value.body) as List)
+            .map((e) => MyPost.fromJson(json: e))
+            .toList();
+        Provider.of<LocalCache>(context, listen: false).reloadProfile = false;
+        Provider.of<LocalCache>(context, listen: false)
+            .setUserPosts(posts: posts);
+        print('Successfully loaded posts of user(id: $user_id)');
+        return posts;
+      } else {
+        print('Error loading user(id: $user_id) posts: ${value.statusCode}');
+      }
+    });
+    return posts;
   }
 }
 
