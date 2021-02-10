@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:vrep/Core/theme.dart';
-import 'package:vrep/Core/userdata.dart';
+import 'package:vrep/Core/localcache.dart';
+import 'package:vrep/Services/apiservices.dart';
 import 'package:vrep/Services/authservices.dart';
 
 class LoginPage extends StatefulWidget {
@@ -14,6 +15,7 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController _passController;
 
   AuthService authService;
+  ApiServices api;
 
   String errorMessage = '';
 
@@ -24,6 +26,7 @@ class _LoginPageState extends State<LoginPage> {
     _passController = TextEditingController();
 
     authService = AuthService();
+    api = ApiServices();
   }
 
   @override
@@ -139,8 +142,11 @@ class _LoginPageState extends State<LoginPage> {
       if (value[0] == 'success') {
         Provider.of<LocalCache>(context, listen: false)
             .setUID(user_id: value[1]);
-        Navigator.pushNamedAndRemoveUntil(
-            context, '/navigationcanvas', (route) => false);
+        api.getUser(user_id: value[1]).then((value) {
+          Provider.of<LocalCache>(context, listen: false).setUser(user: value);
+          Navigator.pushNamedAndRemoveUntil(
+              context, '/navigationcanvas', (route) => false);
+        });
       } else {
         setState(() {
           errorMessage = value[1];

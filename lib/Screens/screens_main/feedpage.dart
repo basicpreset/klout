@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
-import 'package:vrep/Core/userdata.dart';
+import 'package:vrep/Core/localcache.dart';
 import 'package:vrep/Models/post_model.dart';
-import 'package:vrep/Screens/widgets/createpost.dart';
 import 'package:vrep/Screens/widgets/userpost.dart';
 import 'package:vrep/Services/apiservices.dart';
 import 'package:vrep/Services/authservices.dart';
@@ -52,11 +51,7 @@ class _FeedPageState extends State<FeedPage> {
                     )
                   ],
                 ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 10),
-                  child: CreatePost(),
-                ),
-                //Toggle between feed and search
+                // Feed view
                 cache.reloadFeed
                     ? FutureBuilder(
                         future: api.loadFeed(context, user_id: cache.user_id),
@@ -64,8 +59,12 @@ class _FeedPageState extends State<FeedPage> {
                             AsyncSnapshot<List<MyPost>> snapshot) {
                           if (snapshot.connectionState ==
                               ConnectionState.waiting) {
-                            return SpinKitCircle(
-                              color: Colors.blue,
+                            return Expanded(
+                              child: Center(
+                                child: SpinKitCircle(
+                                  color: Colors.blue,
+                                ),
+                              ),
                             );
                           }
                           if (snapshot.data.isEmpty) {
@@ -75,7 +74,7 @@ class _FeedPageState extends State<FeedPage> {
                           return buildFeed(posts: snapshot.data);
                         },
                       )
-                    : buildFeed(posts: cache.feedPosts)
+                    : buildFeed(posts: cache.feed)
               ],
             ),
           ),
@@ -86,15 +85,17 @@ class _FeedPageState extends State<FeedPage> {
 
   Widget buildFeed({List<MyPost> posts}) {
     if (posts != null && posts.length > 0) {
-      return ListView.builder(
-        scrollDirection: Axis.vertical,
-        shrinkWrap: true,
-        itemCount: posts.length,
-        itemBuilder: (BuildContext context, int index) {
-          return PostWidget(
-            post: posts[index],
-          );
-        },
+      return Expanded(
+        child: ListView.builder(
+          scrollDirection: Axis.vertical,
+          shrinkWrap: true,
+          itemCount: posts.length,
+          itemBuilder: (BuildContext context, int index) {
+            return PostWidget(
+              post: posts[index],
+            );
+          },
+        ),
       );
     } else {
       return Text("Uh oh, looks like you don't follow anyone yet!");
@@ -103,6 +104,7 @@ class _FeedPageState extends State<FeedPage> {
 
   Future<void> logout(BuildContext context) async {
     await auth.logout().then((value) {
+      Provider.of<LocalCache>(context, listen: false).logout();
       Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
     });
   }

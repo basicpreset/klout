@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:vrep/Core/theme.dart';
-import 'package:vrep/Core/userdata.dart';
+import 'package:vrep/Core/localcache.dart';
 import 'package:vrep/Models/user_model.dart';
 import 'package:vrep/Services/apiservices.dart';
 
@@ -145,7 +145,7 @@ class _InitialDetailsPageState extends State<InitialDetailsPage> {
                 SizedBox(
                   height: 10,
                 ),
-                Text(
+                /* Text(
                   'E-mail address',
                   textAlign: TextAlign.start,
                 ),
@@ -199,7 +199,7 @@ class _InitialDetailsPageState extends State<InitialDetailsPage> {
                       )
                     ],
                   ),
-                ),
+                ), */
                 Consumer<LocalCache>(builder: (context, data, child) {
                   return Expanded(
                     child: Center(
@@ -217,14 +217,14 @@ class _InitialDetailsPageState extends State<InitialDetailsPage> {
                               user_id: data.user_id,
                               username: _usernameController.text,
                               full_name: _nameController.text,
+                              userbio: '',
                               phone_number: '',
                               email: _emailController.text,
                               reg_date: '2021-02-04T00:42:00',
                               post_count: 0,
                               follower_count: 0,
                               following_count: 0,
-                              profile_img_url: '',
-                              profile_cover_url: '');
+                              profile_img_url: '');
                           createUser(context, newUser);
                         },
                       ),

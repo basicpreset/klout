@@ -1,11 +1,15 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:vrep/Core/userdata.dart';
+import 'package:vrep/Core/localcache.dart';
 import 'package:vrep/Screens/loadingpage.dart';
 import 'package:vrep/Screens/screens_auth/initialdetailspage.dart';
 import 'package:vrep/Screens/screens_auth/otppage.dart';
+import 'package:vrep/Screens/screens_main/foreign_user/foreignuserpage.dart';
+import 'package:vrep/Screens/widgets/createpostpage.dart';
 import 'package:vrep/Services/apiservices.dart';
+import 'package:vrep/Services/authservices.dart';
+import 'Models/post_model.dart';
 import 'Screens/screens_auth/loginpage.dart';
 import 'Screens/screens_auth/signup_emailpass.dart';
 import 'Screens/screens_auth/signup_phone.dart';

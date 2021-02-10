@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
-import 'package:vrep/Core/userdata.dart';
+import 'package:vrep/Core/localcache.dart';
 import 'package:vrep/Services/apiservices.dart';
 
 class LoadingPage extends StatefulWidget {
@@ -43,7 +43,7 @@ class _LoadingPageState extends State<LoadingPage> {
       Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
     } else {
       Provider.of<LocalCache>(context, listen: false).user_id = user.uid;
-      await api.getUser(user_id: user.uid).then((value) {
+       await api.getUser(user_id: user.uid).then((value) {
         if (value != null) {
           Provider.of<LocalCache>(context, listen: false).setUser(user: value);
           Navigator.pushNamedAndRemoveUntil(

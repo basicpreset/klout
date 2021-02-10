@@ -7,7 +7,7 @@ class MyPost {
   String user_img_url;
   String post_content;
   String post_img_url;
-  DateTime created_on;
+  String created_on;
   int likes_count;
   int dislikes_count;
   int comments_count;
@@ -33,7 +33,7 @@ class MyPost {
     this.user_img_url = json['user_img_url'];
     this.post_content = json['post_content'];
     this.post_img_url = json['post_img_url'];
-    this.created_on = DateTime.parse(json['created_on']);
+    this.created_on = json['created_on'];
     this.likes_count = json['likes_count'];
     this.dislikes_count = json['dislikes_count'];
     this.comments_count = json['comments_count'];
@@ -48,7 +48,7 @@ class MyPost {
       'user_img_url': this.user_img_url,
       'post_content': this.post_content,
       'post_img_url': this.post_img_url,
-      'created_on': this.created_on,
+      'created_on': this.created_on.toString(),
       'likes_count': this.likes_count,
       'dislikes_count': this.dislikes_count,
       'comments_count': this.comments_count,

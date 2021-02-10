@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
-import 'package:vrep/Core/userdata.dart';
+import 'package:vrep/Core/localcache.dart';
+import 'package:vrep/Core/utilities.dart';
 import 'package:vrep/Models/post_model.dart';
+import 'package:vrep/Screens/screens_main/postpage.dart';
+import 'package:vrep/Screens/screens_main/foreign_user/foreignuserpage.dart';
+import 'package:vrep/Screens/widgets/post_widget/post_contentbar.dart';
+import 'package:vrep/Screens/widgets/post_widget/post_reactionbar.dart';
+import 'package:vrep/Screens/widgets/post_widget/post_topbar.dart';
 
 class PostWidget extends StatelessWidget {
   MyPost post;
@@ -18,107 +25,50 @@ class PostWidget extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Row(
-                children: [
-                  CircleAvatar(
-                    backgroundImage: AssetImage('profile.jpg'),
-                    radius: 12,
+              InkWell(
+                  child: Post_TopBar(
+                    post: post,
                   ),
-                  //Icon(Icons.repeat),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child:
-                        Text('@' + post.username + ' megosztotta'),
-                  ),
-                  Spacer(),
-                  Text(getPostDate(post.created_on))
-                ],
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        PageTransition(
+                            child: ForeignUserPage(
+                              user_id: post.user_id,
+                            ),
+                            type: PageTransitionType.rightToLeft,
+                            duration: Duration(milliseconds: 200),
+                            curve: Curves.decelerate));
+                  }),
+              SizedBox(
+                height: 20,
+              ),
+              InkWell(
+                child: Post_ContentBar(
+                  post: post,
+                ),
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      PageTransition(
+                          child: PostPage(
+                            post: post,
+                          ),
+                          type: PageTransitionType.leftToRight,
+                          duration: Duration(milliseconds: 200),
+                          curve: Curves.decelerate));
+                },
               ),
               SizedBox(
-                height: 18,
+                height: 20,
               ),
-              Text(
-                post.post_content,
-                textAlign: TextAlign.start,
-              ),
-              SizedBox(
-                height: 18,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      InkWell(
-                          child: voteButton(
-                              type: 'like',
-                              post_id: post.post_id,
-                              likedPosts: cache.likedPosts,
-                              dislikedPosts: cache.dislikedPosts)),
-                      Text(post.likes_count.toString()),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      InkWell(
-                          child: voteButton(
-                              type: 'dislike',
-                              post_id: post.post_id,
-                              likedPosts: cache.likedPosts,
-                              dislikedPosts: cache.dislikedPosts)),
-                      Text(post.dislikes_count.toString()),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Icon(Icons.comment_outlined, size: 18),
-                      Text('Hozzászólások (${post.comments_count.toString()})'),
-                    ],
-                  ),
-                ],
-              ),
+              Post_ReactionBar(
+                post: post,
+              )
             ],
           ),
         ),
       );
     });
-  }
-
-  String getPostDate(DateTime created_on) {
-    String date = created_on.month.toString() +
-        '.' +
-        created_on.day.toString() +
-        '.' +
-        created_on.year.toString();
-    return date;
-  }
-
-  Widget voteButton(
-      {String type,
-      int post_id,
-      List<int> likedPosts,
-      List<int> dislikedPosts}) {
-    switch (type) {
-      case 'like':
-        if (likedPosts.contains(post_id) && likedPosts.isNotEmpty) {
-          return Icon(
-            Icons.keyboard_arrow_up,
-            color: Colors.blue,
-          );
-        }
-        return Icon(Icons.keyboard_arrow_up);
-        break;
-      case 'dislike':
-        if (dislikedPosts.contains(post_id) && dislikedPosts.isNotEmpty) {
-          return Icon(
-            Icons.keyboard_arrow_down,
-            color: Colors.blue,
-          );
-        }
-        return Icon(Icons.keyboard_arrow_down);
-        break;
-    }
-    return SpinKitCircle(
-      size: 16,
-    );
   }
 }

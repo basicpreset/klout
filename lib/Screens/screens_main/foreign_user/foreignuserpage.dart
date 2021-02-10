@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:http/http.dart';
@@ -8,72 +10,75 @@ import 'package:vrep/Core/localcache.dart';
 import 'package:vrep/Core/utilities.dart';
 import 'package:vrep/Models/post_model.dart';
 import 'package:vrep/Models/user_model.dart';
+import 'package:vrep/Screens/screens_main/foreign_user/foreign_user_topbar.dart';
 import 'package:vrep/Screens/widgets/createpostpage.dart';
 import 'package:vrep/Screens/widgets/userpost.dart';
 import 'package:vrep/Screens/widgets/usertrait.dart';
 import 'package:vrep/Services/apiservices.dart';
+import 'package:flutter/services.dart';
 
-class ThisUserPage extends StatefulWidget {
+class ForeignUserPage extends StatefulWidget {
+  String user_id;
+  MyUser user;
+  ForeignUserPage({this.user_id, this.user});
   @override
-  _ThisUserPageState createState() => _ThisUserPageState();
+  _ForeignUserPageState createState() => _ForeignUserPageState();
 }
 
-class _ThisUserPageState extends State<ThisUserPage> {
+class _ForeignUserPageState extends State<ForeignUserPage> {
   ApiServices api;
+
+  bool loading = false;
+
+  MyUser user;
+
+  bool followInProgress = false;
+
   @override
   void initState() {
     super.initState();
     api = ApiServices();
+    loadUser();
+  }
+
+  void loadUser() {
+    if (widget.user == null) {
+      setState(() {
+        loading = true;
+      });
+      api.getUser(user_id: widget.user_id).then((value) {
+        if (value != null) {
+          user = value;
+          setState(() {
+            loading = false;
+          });
+        }
+      });
+    } else {
+      this.user = widget.user;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<LocalCache>(builder: (context, cache, child) {
-      return Container(
+    return Scaffold(
+      body: Container(
         child: SafeArea(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
             child: Column(
               /* mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start, */
+                crossAxisAlignment: CrossAxisAlignment.start, */
               //scrollDirection: Axis.horizontal,
               children: [
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 8),
-                  child: Row(
-                    children: [
-                      Text(
-                        '@' + cache.user.username,
-                        style: TextStyle(
-                            fontSize: 24, fontWeight: FontWeight.w600),
-                      ),
-                      Spacer(),
-/*                     Icon(
-                        Icons.add,
-                        size: 24,
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ), */
-                      InkWell(
-                        child: Icon(
-                          Icons.edit,
-                          size: 24,
-                        ),
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            PageTransition(
-                                type: PageTransitionType.bottomToTop,
-                                child: CreatePostPage(),
-                                curve: Curves.decelerate,
-                                duration: Duration(milliseconds: 200)),
-                          );
-                        },
-                      )
-                    ],
-                  ),
-                ),
+                loading
+                    ? Text('loading')
+                    : Consumer<LocalCache>(builder: (context, cache, child) {
+                        return ForeignUserPage_TopBar(
+                          foreignUser: user,
+                          cacheUser: cache.user,
+                        );
+                      }),
                 //SingleChildScrollView(
                 Expanded(
                   child: ListView(
@@ -93,8 +98,10 @@ class _ThisUserPageState extends State<ThisUserPage> {
                             Expanded(
                               child: Column(
                                 children: [
-                                  Text(Utilities.formatStats(
-                                      cache.user.post_count)),
+                                  (loading
+                                      ? Text('')
+                                      : Text(Utilities.formatStats(
+                                          user.post_count))),
                                   Text('Posts')
                                 ],
                               ),
@@ -102,8 +109,10 @@ class _ThisUserPageState extends State<ThisUserPage> {
                             Expanded(
                               child: Column(
                                 children: [
-                                  Text(Utilities.formatStats(
-                                      cache.user.follower_count)),
+                                  (loading
+                                      ? Text('')
+                                      : Text(Utilities.formatStats(
+                                          user.follower_count))),
                                   Text('Followers')
                                 ],
                               ),
@@ -111,8 +120,10 @@ class _ThisUserPageState extends State<ThisUserPage> {
                             Expanded(
                               child: Column(
                                 children: [
-                                  Text(Utilities.formatStats(
-                                      cache.user.following_count)),
+                                  (loading
+                                      ? Text('')
+                                      : Text(Utilities.formatStats(
+                                          user.following_count))),
                                   Text('Following')
                                 ],
                               ),
@@ -121,42 +132,38 @@ class _ThisUserPageState extends State<ThisUserPage> {
                         ),
                       ),
                       Text(
-                        cache.user.full_name,
+                        (loading ? '' : user.full_name),
                         style: TextStyle(
                             fontSize: 16, fontWeight: FontWeight.w600),
                       ),
                       Text('Lorem ipsum dolor sit amet.'),
                       UserTrait('Software Developer'),
-/*                       cache.reloadProfile
-                          ? FutureBuilder<List<MyPost>>(
-                              future: api.thisUserPosts(context,
-                                  user_id: cache.user_id),
-                              builder: (BuildContext ctxt,
-                                  AsyncSnapshot<List<MyPost>> snapshot) {
-                                if (snapshot.connectionState ==
-                                    ConnectionState.waiting) {
-                                  return SpinKitCircle(
-                                    color: Colors.blue,
-                                  );
-                                }
-                                if (snapshot.connectionState ==
-                                    ConnectionState.none) {
-                                  return Center(
-                                    child: Text(
-                                        "No connection, please try restarting the app."),
-                                  );
-                                }
-                                if (snapshot.data == null) {
-                                  return Center(
-                                    child: Text("No posts found."),
-                                  );
-                                }
+                      FutureBuilder<List<MyPost>>(
+                        future: api.userPosts(user_id: widget.user_id),
+                        builder: (BuildContext ctxt,
+                            AsyncSnapshot<List<MyPost>> snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return SpinKitCircle(
+                              color: Colors.blue,
+                            );
+                          }
+                          if (snapshot.connectionState ==
+                              ConnectionState.none) {
+                            return Center(
+                              child: Text(
+                                  "No connection, please try restarting the app."),
+                            );
+                          }
+                          if (snapshot.data.isEmpty || snapshot.data == null) {
+                            return Center(
+                              child: Text("No posts found."),
+                            );
+                          }
 
-                                return posts(posts: snapshot.data);
-                              },
-                            )
-                          : posts(posts: cache.user.posts), */
-                      posts(posts: cache.user.posts)
+                          return posts(posts: snapshot.data);
+                        },
+                      )
                     ],
                   ),
                 ),
@@ -164,8 +171,8 @@ class _ThisUserPageState extends State<ThisUserPage> {
             ),
           ),
         ),
-      );
-    });
+      ),
+    );
   }
 
   Widget posts({List<MyPost> posts}) {

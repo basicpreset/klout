@@ -1,0 +1,14 @@
+
+    {
+        "user_id":"123",
+        "username":"username",
+        "full_name":"Full name",
+        "userbio":"Lorem ipsum dolor sit amet.",
+        "phone_number":"+36703333333",
+        "email":"email@email.com",
+        "reg_date":"2021-02-09T21:00:23",
+        "post_count":23,
+        "follower_count":321,
+        "following_count":32,
+        "profile_img_url":""
+    }

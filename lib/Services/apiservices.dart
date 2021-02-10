@@ -1,12 +1,15 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:provider/provider.dart';
-import 'package:vrep/Core/userdata.dart';
+import 'package:vrep/Core/localcache.dart';
 import 'package:vrep/Models/post_model.dart';
 import 'package:vrep/Models/user_model.dart';
 import 'package:http/http.dart' as http;
+import 'package:vrep/Services/errorhandler.dart';
 
 class ApiServices {
+  ErrorHandler errorHandler = ErrorHandler();
+
   void httpConfig() {
     HttpOverrides.global = new MyHttpOverrides();
   }
@@ -48,17 +51,116 @@ class ApiServices {
   }
 
   // 3. Edit user
+  Future<MyUser> editUser({MyUser user}) async {
+    var jsonBody = jsonEncode(user.toJson());
+    await http.post(
+      baseUrl + 'user/${user.user_id}/edit',
+      body: jsonBody,
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
+    ).then((value) {
+      errorHandler.networkError(value.statusCode, task: 'editing user');
+      if (value.statusCode == 200) {
+        MyUser editedUser = MyUser.fromJson(jsonDecode(value.body));
+        return editedUser;
+      } else {
+        return null;
+      }
+    });
+  }
 
   // 4. Delete user
+  Future<bool> deleteUser({String user_id}) async {
+    await http.get(baseUrl + 'user/$user_id/delete').then((value) {
+      errorHandler.networkError(value.statusCode, task: 'deleting user');
+      if (value.statusCode == 200) {
+        return true;
+      } else {
+        return false;
+      }
+    });
+  }
 
   // 5. Follow user
+  Future<bool> followUser({String follower_id, String following_id}) async {
+    await http
+        .get(baseUrl + 'user/$follower_id/follow/$following_id')
+        .then((value) {
+      if (value.statusCode == 200) {
+        errorHandler.networkError(value.statusCode, task: 'following user');
+        return true;
+      } else {
+        return false;
+      }
+    });
+  }
 
   // 6. Unfollow user
+  Future<bool> unfollowUser(
+      {String unfollower_id, String unfollowed_id}) async {
+    print('User $unfollower_id unfollowing $unfollowed_id');
+    await http
+        .get(baseUrl + 'user/$unfollower_id/unfollow/$unfollowed_id')
+        .then((value) {
+      print('statuscode: ${value.statusCode}');
+      if (value.statusCode == 200) {
+        errorHandler.networkError(value.statusCode, task: 'unfollowing user');
+        return true;
+      } else {
+        return false;
+      }
+    });
+  }
 
   // 7. Followers
+  Future<List<String>> followers({String user_id}) async {
+    await http.get(baseUrl + 'user/$user_id/followers').then((value) {
+      errorHandler.networkError(value.statusCode, task: 'getting followers');
+      if (value.statusCode == 200) {
+        if (value.body != null) {
+          return (value.body as List);
+        } else
+          return List<String>();
+      } else {
+        return null;
+      }
+    });
+  }
 
   // 8. Following
+  Future<List<String>> following({String user_id}) async {
+    List<String> following = [];
+    await http.get(baseUrl + 'user/$user_id/following').then((value) {
+      errorHandler.networkError(value.statusCode, task: 'getting following');
+      if (value.statusCode == 200) {
+        var jsonBody = jsonDecode(value.body);
+        following =
+            (jsonBody as List<dynamic>).map((e) => e.toString()).toList();
+      } else {
+        return null;
+      }
+    });
+    return following;
+  }
 
+  // 9. Get users
+  Future<List<MyUser>> searchUsers({String query}) async {
+    List<MyUser> users;
+    await http.get(baseUrl + 'user/search').then((value) {
+      if (value.statusCode == 200) {
+        print('Successfully retrieved all users from server.');
+        users = (jsonDecode(value.body) as List)
+            .map((e) => MyUser.fromJson(e))
+            .toList();
+      } else {
+        print(
+            'Error: ${value.statusCode}, couldnt retrieve users from server.');
+      }
+    });
+    return users;
+  }
   // FEED ENDPOINTS -----------------
 
   // 1. Get post
@@ -78,18 +180,21 @@ class ApiServices {
   }
 
   // 2. Create post
-  Future<MyPost> createPost({String user_id, MyPost post}) async {
+  Future<MyPost> createPost({MyPost post}) async {
     var jsonBody = jsonEncode(post.toJson());
     MyPost newPost;
-    await http.post(baseUrl + 'post/$user_id/create', body: jsonBody, headers: {
-      'Content-type': 'application/json',
-      'Accept': 'application/json'
-    }).then((value) {
+    await http.post(baseUrl + 'post/${post.user_id}/create',
+        body: jsonBody,
+        headers: {
+          'Content-type': 'application/json',
+          'Accept': 'application/json'
+        }).then((value) {
       if (value.statusCode == 200) {
         newPost = MyPost.fromJson(json: jsonDecode(value.body));
         return newPost;
       } else {
-        print('Error creating post, status code: ${value.statusCode}');
+        print(
+            'Error creating post, status code: ${value.statusCode}, error: ${value.headers}');
         return null;
       }
     });
@@ -152,31 +257,33 @@ class ApiServices {
   }
 
   // 6. Like post
-  Future<bool> likePost({String user_id, int post_id}) async {
+  Future<int> likePost({String user_id, int post_id}) async {
+    int likeCount;
     await http.get(baseUrl + 'post/$user_id/like/$post_id').then((value) {
       if (value.statusCode == 200) {
         print('Successfully liked post(id: $post_id');
-        return true;
+        likeCount = jsonDecode(value.body);
       } else {
         print('Error liking post, status code: ${value.statusCode}');
-        return false;
+        return null;
       }
     });
-    return true;
+    return likeCount;
   }
 
   // 7. Dislike post
-  Future<bool> dislikePost({String user_id, int post_id}) async {
+  Future<int> dislikePost({String user_id, int post_id}) async {
+    int dislikeCount;
     await http.get(baseUrl + 'post/$user_id/dislike/$post_id').then((value) {
       if (value.statusCode == 200) {
         print('Successfully disliked post(id: $post_id');
-        return true;
+        dislikeCount = jsonDecode(value.body);
       } else {
         print('Error disliking post, status code: ${value.statusCode}');
-        return false;
+        return null;
       }
     });
-    return true;
+    return dislikeCount;
   }
 
   // 8. Load feed of {user_id}
@@ -199,16 +306,13 @@ class ApiServices {
   }
 
   // 9. All posts of {user_id}
-  Future<List<MyPost>> thisUserPosts(context, {String user_id}) async {
+  Future<List<MyPost>> userPosts({String user_id}) async {
     List<MyPost> posts;
     await http.get(baseUrl + 'post/$user_id/all').then((value) {
       if (value.statusCode == 200) {
         posts = (jsonDecode(value.body) as List)
             .map((e) => MyPost.fromJson(json: e))
             .toList();
-        Provider.of<LocalCache>(context, listen: false).reloadProfile = false;
-        Provider.of<LocalCache>(context, listen: false)
-            .setUserPosts(posts: posts);
         print('Successfully loaded posts of user(id: $user_id)');
         return posts;
       } else {

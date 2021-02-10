@@ -1,4 +1,8 @@
 import 'package:uuid/uuid.dart';
+import 'package:vrep/Models/post_model.dart';
+
+import 'dislike_model.dart';
+import 'like_model.dart';
 
 class MyUser {
   String user_id;
@@ -12,7 +16,13 @@ class MyUser {
   int follower_count;
   int following_count;
   String profile_img_url;
-  String profile_cover_url;
+
+  List<MyPost> posts = [];
+  List<int> likes = [];
+  List<int> dislikes = [];
+
+  List<String> following = [];
+  List<String> followers = [];
 
   MyUser(
       {this.user_id,
@@ -26,7 +36,9 @@ class MyUser {
       this.follower_count,
       this.following_count,
       this.profile_img_url,
-      this.profile_cover_url});
+      this.posts,
+      this.likes,
+      this.dislikes});
 
   MyUser.fromJson(Map<String, dynamic> json) {
     this.user_id = json['user_id'];
@@ -40,7 +52,13 @@ class MyUser {
     this.follower_count = json['follower_count'];
     this.following_count = json['following_count'];
     this.profile_img_url = json['profile_img_url'];
-    this.profile_cover_url = json['profile_cover_url'];
+    if (json['posts'] != null) {
+      this.posts =
+          (json['posts'] as List).map((e) => MyPost.fromJson(json: e)).toList();
+    }
+    this.likes = (json['likes'] as List).map((e) => e as int).toList();
+    this.dislikes = (json['dislikes'] as List).map((e) => e as int).toList();
+    print('Json likes: ${json['dislike']}');
   }
 
   Map<String, dynamic> toJson() {
@@ -55,8 +73,7 @@ class MyUser {
       'post_count': this.post_count,
       'follower_count': this.follower_count,
       'following': this.following_count,
-      'profile_img_url': this.profile_img_url,
-      'profile_cover_url': this.profile_cover_url
+      'profile_img_url': this.profile_img_url
     };
   }
 }
